@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QAForge Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090B;
+  --surface:#0E0E12;
+  --surface-2:#141419;
+  --glass:rgba(255,255,255,.025);
+  --glass-strong:rgba(255,255,255,.045);
+  --border:rgba(255,255,255,.06);
+  --border-strong:rgba(255,255,255,.10);
+  --text:#FAFAFA;
+  --muted:#9A9AA4;
+  --dim:#63636D;
+  --lime:#A3FF12;
+  --lime-2:#8CE000;
+  --lime-soft:rgba(163,255,18,.12);
+  --lime-line:rgba(163,255,18,.28);
+  --cyan:#22D3EE;
+  --cyan-soft:rgba(34,211,238,.12);
+  --yellow:#FBBF24;
+  --red:#F43F5E;
+  --emerald:#34D399;
+  --emerald-soft:rgba(52,211,153,.12);
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:10px;
+  --sb:248px;
+  --shadow:0 12px 40px -12px rgba(0,0,0,.7);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-.01em;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(680px 420px at 78% -6%, rgba(163,255,18,.07), transparent 60%),
+    radial-gradient(560px 420px at 8% 108%, rgba(34,211,238,.05), transparent 60%);
+}
+.mono{font-family:'JetBrains Mono',monospace;letter-spacing:-.02em}
+::selection{background:var(--lime);color:#0a0a0a}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:20px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.16);background-clip:padding-box}
+
+/* ---------- shell ---------- */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:var(--sb) 1fr;min-height:100vh}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;
+  padding:22px 16px;gap:6px;
+  border-right:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 40%);
+  backdrop-filter:blur(8px);
+}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 20px;margin-bottom:6px}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;flex:none;
+  display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--lime),var(--lime-2));
+  box-shadow:0 0 0 1px rgba(163,255,18,.4),0 6px 22px -6px rgba(163,255,18,.55);
+}
+.brand-mark svg{width:19px;height:19px;color:#08120a}
+.brand-txt strong{display:block;font-weight:800;font-size:15px;letter-spacing:-.03em;line-height:1.1}
+.brand-txt span{font-size:10.5px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:8px 10px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 11px;border-radius:11px;
+  color:var(--muted);font-weight:500;font-size:13.5px;
+  position:relative;transition:.16s var(--ease);width:100%;text-align:left;
+}
+.nav-item svg{width:18px;height:18px;flex:none;opacity:.85;transition:.16s}
+.nav-item:hover{background:var(--glass);color:var(--text)}
+.nav-item.active{background:var(--lime-soft);color:var(--text)}
+.nav-item.active svg{color:var(--lime);opacity:1}
+.nav-item.active::before{
+  content:"";position:absolute;left:-16px;top:50%;transform:translateY(-50%);
+  width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--lime);
+  box-shadow:0 0 12px 1px var(--lime);
+}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--cyan-soft);color:var(--cyan)}
+.sidebar-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:14px}
+
+.streak-card{
+  border:1px solid var(--border);border-radius:var(--r-md);
+  background:var(--glass);padding:13px 14px;
+}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.streak-top span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.streak-fire{display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px}
+.streak-fire b{color:var(--yellow)}
+.streak-dots{display:flex;gap:6px;justify-content:space-between}
+.dot{flex:1;height:6px;border-radius:20px;background:rgba(255,255,255,.07)}
+.dot.on{background:linear-gradient(90deg,var(--yellow),#f97316);box-shadow:0 0 8px -1px rgba(251,191,36,.6)}
+.xp-mini{padding:2px}
+.xp-mini-top{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
+.xp-mini-top b{color:var(--text);font-weight:600}
+.bar{height:6px;border-radius:20px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar > i{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--lime-2),var(--lime));box-shadow:0 0 10px -1px var(--lime-line);transition:width 1s var(--ease)}
+.theme-row{display:flex;align-items:center;gap:10px;padding:4px 4px}
+.switch{width:42px;height:23px;border-radius:20px;background:var(--lime);position:relative;flex:none;box-shadow:0 0 0 1px rgba(163,255,18,.4) inset}
+.switch::after{content:"";position:absolute;top:2.5px;right:2.5px;width:18px;height:18px;border-radius:50%;background:#0a0a0a}
+.theme-row span{font-size:12.5px;color:var(--muted)}
+
+/* ---------- topbar ---------- */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;gap:18px;
+  padding:14px 30px;
+  border-bottom:1px solid var(--border);
+  background:rgba(9,9,11,.72);backdrop-filter:blur(14px);
+}
+.search{
+  flex:1;max-width:440px;display:flex;align-items:center;gap:10px;
+  padding:9px 14px;border-radius:11px;
+  border:1px solid var(--border);background:var(--glass);
+  transition:.18s;
+}
+.search:focus-within{border-color:var(--lime-line);background:var(--glass-strong);box-shadow:0 0 0 3px var(--lime-soft)}
+.search svg{width:16px;height:16px;color:var(--dim);flex:none}
+.search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13.5px}
+.search input::placeholder{color:var(--dim)}
+.search kbd{font-size:10.5px;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:2px 6px;font-family:'JetBrains Mono',monospace}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.pill{
+  display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:11px;
+  border:1px solid var(--border);background:var(--glass);font-weight:600;font-size:13px;
+}
+.pill svg{width:15px;height:15px}
+.pill.pts svg{color:var(--yellow)}
+.pill.pts b{color:var(--yellow)}
+.pill.rank{border-color:var(--lime-line);background:var(--lime-soft)}
+.pill.rank svg{color:var(--lime)}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  border:1px solid var(--border);background:var(--glass);color:var(--muted);position:relative;transition:.16s;
+}
+.icon-btn:hover{color:var(--text);border-color:var(--border-strong);background:var(--glass-strong)}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn .ping{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime),0 0 0 3px var(--bg)}
+.avatar{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;
+  font-weight:800;font-size:13px;color:#08120a;
+  background:linear-gradient(140deg,var(--lime),var(--cyan));
+  box-shadow:0 0 0 1px rgba(255,255,255,.12);
+}
+.avatar.sm{width:30px;height:30px;font-size:11px;border-radius:9px}
+
+/* ---------- content ---------- */
+.content{padding:30px;max-width:1400px;width:100%}
+.view{display:none;animation:fade .4s var(--ease)}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-head{margin-bottom:24px}
+.page-head h1{font-size:27px;font-weight:800;letter-spacing:-.035em}
+.page-head p{color:var(--muted);margin-top:4px;font-size:14px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--lime);box-shadow:0 0 8px var(--lime)}
+
+.card{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);backdrop-filter:blur(6px)}
+.grid{display:grid;gap:18px}
+
+/* section header */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-head h2{font-size:16px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.sec-head h2 svg{width:17px;height:17px;color:var(--lime)}
+.link{font-size:12.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:4px;transition:.15s}
+.link:hover{color:var(--lime)}
+.link svg{width:13px;height:13px}
+
+/* ---------- dashboard ---------- */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{padding:18px 20px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--glass);position:relative;overflow:hidden;transition:.2s var(--ease)}
+.stat:hover{transform:translateY(-3px);border-color:var(--border-strong);background:var(--glass-strong)}
+.stat-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;margin-bottom:14px}
+.stat-ic svg{width:17px;height:17px}
+.stat .k{font-size:26px;font-weight:800;letter-spacing:-.04em;font-family:'JetBrains Mono',monospace}
+.stat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
+.stat .d{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;color:var(--emerald);display:flex;align-items:center;gap:3px}
+.stat .d svg{width:12px;height:12px}
+.dash-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;align-items:start}
+
+.activity li{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity li:last-child{border-bottom:none;padding-bottom:0}
+.act-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--emerald-soft);color:var(--emerald)}
+.act-ic svg{width:15px;height:15px}
+.act-main{flex:1;min-width:0}
+.act-main b{font-weight:600;font-size:13.5px;display:block}
+.act-main span{font-size:12px;color:var(--dim)}
+.act-xp{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12.5px;color:var(--lime)}
+
+/* mini leaderboard */
+.lb-row{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:11px;transition:.14s}
+.lb-row:hover{background:var(--glass)}
+.lb-row.me{background:var(--lime-soft);border:1px solid var(--lime-line)}
+.lb-rank{width:24px;text-align:center;font-weight:800;font-size:13px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.lb-row.me .lb-rank{color:var(--lime)}
+.medal{filter:drop-shadow(0 0 4px currentColor)}
+.lb-name{flex:1;font-weight:600;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-pts{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--muted)}
+.lb-row.me .lb-pts{color:var(--lime)}
+.flag{font-size:14px;line-height:1}
+
+/* continue card */
+.continue{
+  grid-column:1/-1;display:flex;align-items:center;gap:22px;padding:22px 24px;
+  border:1px solid var(--lime-line);border-radius:var(--r-lg);
+  background:linear-gradient(120deg,var(--lime-soft),transparent 55%);position:relative;overflow:hidden;
+}
+.continue::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--lime-soft),transparent 70%)}
+.continue .c-ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--lime);color:#08120a;box-shadow:0 8px 26px -8px var(--lime)}
+.continue .c-ic svg{width:24px;height:24px}
+.continue h3{font-size:16px;font-weight:700}
+.continue p{color:var(--muted);font-size:13px;margin-top:2px}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:11px;font-weight:700;font-size:13.5px;
+  transition:.16s var(--ease);white-space:nowrap;
+}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--lime);color:#08120a;box-shadow:0 6px 22px -8px var(--lime-line)}
+.btn-primary:hover{background:var(--lime-2);transform:translateY(-2px);box-shadow:0 10px 30px -8px var(--lime-line)}
+.btn-ghost{border:1px solid var(--border-strong);background:var(--glass);color:var(--text)}
+.btn-ghost:hover{border-color:var(--lime-line);color:var(--lime);background:var(--lime-soft)}
+.btn-sm{padding:8px 14px;font-size:12.5px}
+.btn-block{width:100%}
+
+/* ---------- challenges ---------- */
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:26px;margin-bottom:22px}
+.filter-group{display:flex;align-items:center;gap:8px}
+.filter-group > span{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-right:2px}
+.chip{
+  padding:6px 13px;border-radius:20px;font-size:12.5px;font-weight:600;
+  border:1px solid var(--border);background:var(--glass);color:var(--muted);transition:.15s;
+}
+.chip:hover{color:var(--text);border-color:var(--border-strong)}
+.chip.active{background:var(--lime);color:#08120a;border-color:var(--lime)}
+.chip.diff-easy.active{background:var(--emerald);border-color:var(--emerald);color:#04140d}
+.chip.diff-medium.active{background:var(--yellow);border-color:var(--yellow);color:#1a1204}
+.chip.diff-hard.active{background:var(--red);border-color:var(--red);color:#fff}
+.chip.diff-expert.active{background:#a855f7;border-color:#a855f7;color:#fff}
+
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ch-card{
+  padding:20px;border:1px solid var(--border);border-radius:var(--r-lg);
+  background:var(--glass);position:relative;transition:.2s var(--ease);overflow:hidden;text-align:left;
+  display:flex;flex-direction:column;gap:14px;
+}
+.ch-card:hover{transform:translateY(-4px);border-color:var(--border-strong);background:var(--glass-strong);box-shadow:var(--shadow)}
+.ch-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(130deg,var(--lime-line),transparent 40%);opacity:0;transition:.25s;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.ch-card:hover::before{opacity:1}
+.ch-top{display:flex;align-items:flex-start;justify-content:space-between}
+.ch-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center}
+.ch-ic svg{width:21px;height:21px}
+.badge-diff{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em}
+.d-easy{background:var(--emerald-soft);color:var(--emerald)}
+.d-medium{background:rgba(251,191,36,.14);color:var(--yellow)}
+.d-hard{background:rgba(244,63,94,.14);color:var(--red)}
+.d-expert{background:rgba(168,85,247,.15);color:#c084fc}
+.ch-card h3{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.ch-cat{font-size:12px;color:var(--dim);font-weight:500;margin-top:2px}
+.ch-desc{font-size:13px;color:var(--muted);line-height:1.55;flex:1}
+.ch-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--muted)}
+.ch-meta span{display:flex;align-items:center;gap:5px}
+.ch-meta svg{width:13px;height:13px;opacity:.8}
+.ch-meta .xp{color:var(--yellow);font-weight:600;font-family:'JetBrains Mono',monospace}
+.ch-prog{margin-top:2px}
+.ch-prog-top{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:6px}
+.ch-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
+.done-tag{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--emerald)}
+.done-tag svg{width:15px;height:15px}
+
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:26px}
+.pg{min-width:36px;height:36px;padding:0 6px;border-radius:10px;border:1px solid var(--border);background:var(--glass);color:var(--muted);font-weight:600;font-size:13px;display:grid;place-items:center;transition:.15s}
+.pg:hover{color:var(--text);border-color:var(--border-strong)}
+.pg.active{background:var(--lime);color:#08120a;border-color:var(--lime)}
+
+/* ---------- challenge detail ---------- */
+.detail-grid{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+.back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;font-size:13px;margin-bottom:18px;transition:.15s}
+.back:hover{color:var(--lime)}
+.back svg{width:15px;height:15px}
+.detail-hero{padding:24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);margin-bottom:18px}
+.dh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.dh-title{display:flex;align-items:center;gap:14px}
+.dh-title .ch-ic{width:50px;height:50px}
+.dh-title h1{font-size:23px;font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dh-meta{display:flex;gap:18px;margin-top:9px;font-size:12.5px;color:var(--muted)}
+.dh-meta span{display:flex;align-items:center;gap:6px}
+.dh-meta svg{width:14px;height:14px}
+.dh-meta .xp{color:var(--yellow);font-weight:600;font-family:'JetBrains Mono',monospace}
+.block{margin-top:22px}
+.block .eyebrow{color:var(--lime)}
+.block p.body{color:var(--muted);line-height:1.65;font-size:13.5px}
+.note{
+  display:flex;align-items:flex-start;gap:11px;margin-top:14px;padding:13px 15px;border-radius:12px;
+  border:1px solid rgba(251,191,36,.2);background:rgba(251,191,36,.06);font-size:13px;color:#e9d9a8;line-height:1.55;
+}
+.note svg{width:16px;height:16px;color:var(--yellow);flex:none;margin-top:1px}
+
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{
+  display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:12px;
+  border:1px solid var(--border);background:var(--glass);transition:.16s;text-align:left;width:100%;
+}
+.opt:hover{border-color:var(--border-strong);background:var(--glass-strong)}
+.opt .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--dim);flex:none;display:grid;place-items:center;transition:.16s}
+.opt .box svg{width:12px;height:12px;color:#08120a;opacity:0;transform:scale(.5);transition:.16s}
+.opt.sel{border-color:var(--lime-line);background:var(--lime-soft)}
+.opt.sel .box{background:var(--lime);border-color:var(--lime)}
+.opt.sel .box svg{opacity:1;transform:scale(1)}
+.opt.correct{border-color:var(--emerald);background:var(--emerald-soft)}
+.opt.correct .box{background:var(--emerald);border-color:var(--emerald)}
+.opt.correct .box svg{opacity:1;transform:scale(1)}
+.opt.wrong{border-color:var(--red);background:rgba(244,63,94,.08)}
+.opt.wrong .box{border-color:var(--red)}
+.opt span{font-size:13.5px;font-weight:500}
+
+/* success card */
+.success{
+  margin-top:20px;padding:22px;border-radius:var(--r-lg);
+  border:1px solid var(--emerald);background:linear-gradient(135deg,var(--emerald-soft),transparent 60%);
+  display:none;position:relative;overflow:hidden;
+}
+.success.show{display:block;animation:pop .5s var(--ease)}
+@keyframes pop{0%{opacity:0;transform:scale(.94) translateY(10px)}100%{opacity:1;transform:none}}
+.suc-head{display:flex;align-items:center;gap:14px}
+.suc-check{width:46px;height:46px;border-radius:50%;background:var(--emerald);display:grid;place-items:center;flex:none;box-shadow:0 0 0 6px var(--emerald-soft);animation:ring 1.6s var(--ease) infinite}
+@keyframes ring{0%{box-shadow:0 0 0 4px var(--emerald-soft)}50%{box-shadow:0 0 0 12px rgba(52,211,153,0)}100%{box-shadow:0 0 0 4px var(--emerald-soft)}}
+.suc-check svg{width:24px;height:24px;color:#04140d}
+.suc-head h3{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.suc-head p{color:var(--muted);font-size:13px}
+.suc-rewards{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.reward{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:11px;border:1px solid var(--border);background:var(--surface-2)}
+.reward svg{width:17px;height:17px}
+.reward b{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px}
+.reward small{color:var(--dim);font-size:11px;display:block;line-height:1.2}
+.explain{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.explain h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.explain h4 svg{width:15px;height:15px;color:var(--cyan)}
+.explain p{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:14px}
+.tips{display:flex;flex-direction:column;gap:9px}
+.tip{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5}
+.tip .tk{width:6px;height:6px;border-radius:2px;background:var(--lime);flex:none;margin-top:7px;box-shadow:0 0 8px var(--lime-line)}
+
+/* AI mentor */
+.mentor{position:sticky;top:96px}
+.mentor-head{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+.mentor-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(140deg,var(--cyan),#0ea5e9);color:#04121a;flex:none}
+.mentor-ic svg{width:18px;height:18px}
+.mentor-head b{font-size:14.5px;font-weight:700}
+.mentor-head small{font-size:11px;color:var(--dim)}
+.mentor-sub{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 0 16px}
+.hint{border:1px solid var(--border);border-radius:13px;background:var(--surface-2);margin-bottom:11px;overflow:hidden;transition:.2s var(--ease)}
+.hint-head{display:flex;align-items:center;gap:10px;padding:13px 15px;width:100%;text-align:left}
+.hint-head b{font-size:13px;font-weight:700;flex:1}
+.hint-num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:800;font-family:'JetBrains Mono',monospace;background:var(--cyan-soft);color:var(--cyan);flex:none}
+.hint-head .lock{width:15px;height:15px;color:var(--dim)}
+.hint-head .chev{width:15px;height:15px;color:var(--dim);transition:.2s}
+.hint.open .chev{transform:rotate(90deg);color:var(--cyan)}
+.hint-body{max-height:0;overflow:hidden;transition:max-height .3s var(--ease)}
+.hint-body p{padding:0 15px 15px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.hint.open{border-color:var(--cyan-soft)}
+.hint.locked{opacity:.55}
+.hint.locked .hint-head{cursor:not-allowed}
+.hint.revealed .hint-num{background:var(--emerald-soft);color:var(--emerald)}
+.mentor-note{font-size:11px;color:var(--dim);text-align:center;margin-top:6px;line-height:1.5}
+.mentor-note b{color:var(--cyan)}
+
+/* ---------- leaderboard ---------- */
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;align-items:end}
+.pod{padding:22px 18px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);text-align:center;position:relative}
+.pod.p1{border-color:var(--lime-line);background:linear-gradient(180deg,var(--lime-soft),transparent);order:2;padding-top:30px}
+.pod.p2{order:1}
+.pod.p3{order:3}
+.pod-crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:22px;filter:drop-shadow(0 2px 6px rgba(251,191,36,.5))}
+.pod .avatar{width:56px;height:56px;font-size:18px;border-radius:16px;margin:0 auto 12px}
+.pod.p1 .avatar{width:66px;height:66px;box-shadow:0 0 0 2px var(--lime),0 10px 30px -8px var(--lime-line)}
+.pod-name{font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:7px}
+.pod-role{font-size:11.5px;color:var(--dim);margin-top:2px}
+.pod-pts{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:20px;margin-top:12px;color:var(--lime)}
+.pod.p2 .pod-pts,.pod.p3 .pod-pts{color:var(--text)}
+.pod-medal{position:absolute;top:16px;right:16px;font-weight:800;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--dim)}
+
+.lb-table{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);overflow:hidden}
+.lb-th,.lb-tr{display:grid;grid-template-columns:60px 1fr 130px 90px 120px;align-items:center;gap:14px;padding:14px 22px}
+.lb-th{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border)}
+.lb-tr{border-bottom:1px solid var(--border);transition:.14s}
+.lb-tr:last-child{border-bottom:none}
+.lb-tr:hover{background:var(--glass)}
+.lb-tr.me{background:var(--lime-soft)}
+.lb-tr.me::before{content:"";position:absolute}
+.lb-tr .rk{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:15px;color:var(--dim)}
+.lb-tr.me .rk{color:var(--lime)}
+.lb-user{display:flex;align-items:center;gap:12px;min-width:0}
+.lb-user b{font-weight:600;font-size:13.5px}
+.lb-user small{font-size:11.5px;color:var(--dim);display:block}
+.lb-cell{font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.lb-cell.pts{font-weight:700;color:var(--text)}
+.lb-tr.me .lb-cell.pts{color:var(--lime)}
+.trend{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+.trend svg{width:12px;height:12px}
+.up{color:var(--emerald)}.down{color:var(--red)}.flat{color:var(--dim)}
+
+/* ---------- profile ---------- */
+.profile-grid{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}
+.pcard{padding:26px 24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);text-align:center;position:relative;overflow:hidden}
+.pcard::before{content:"";position:absolute;top:0;left:0;right:0;height:90px;background:linear-gradient(120deg,var(--lime-soft),var(--cyan-soft))}
+.pcard .avatar{width:88px;height:88px;font-size:30px;border-radius:24px;margin:0 auto 16px;position:relative;box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--lime-line)}
+.pcard h2{font-size:20px;font-weight:800;letter-spacing:-.02em;position:relative}
+.pcard .email{color:var(--dim);font-size:12.5px;position:relative;margin-top:2px}
+.role-badge{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 13px;border-radius:20px;border:1px solid var(--lime-line);background:var(--lime-soft);color:var(--lime);font-weight:700;font-size:12px;position:relative}
+.role-badge svg{width:13px;height:13px}
+.pstats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.pstat{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2)}
+.pstat .k{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:20px}
+.pstat .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+.pstat.lime .k{color:var(--lime)}
+.pstat.cyan .k{color:var(--cyan)}
+.pstat.yellow .k{color:var(--yellow)}
+.pstat.emerald .k{color:var(--emerald)}
+
+.ring-card{display:flex;align-items:center;gap:22px;padding:24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass)}
+.ring{position:relative;width:118px;height:118px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring-center b{font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--lime)}
+.ring-center span{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.ring-info h3{font-size:16px;font-weight:700}
+.ring-info p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.55;max-width:340px}
+.weekly-goal{margin-top:16px}
+.weekly-goal .wg-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:8px}
+.weekly-goal .wg-top b{font-family:'JetBrains Mono',monospace}
+
+.lvl-card{padding:22px 24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);margin-top:18px}
+.lvl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.lvl-top .now{display:flex;align-items:center;gap:10px}
+.lvl-chip{padding:5px 12px;border-radius:9px;font-weight:800;font-size:12px;background:var(--lime-soft);color:var(--lime);font-family:'JetBrains Mono',monospace}
+.lvl-next{font-size:12px;color:var(--dim)}
+.lvl-xp{text-align:center;font-size:12px;color:var(--muted);margin-top:10px;font-family:'JetBrains Mono',monospace}
+
+/* ---------- badges ---------- */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.bcard{padding:24px 18px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass);text-align:center;transition:.2s var(--ease);position:relative;overflow:hidden}
+.bcard:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.hex{width:74px;height:74px;margin:0 auto 16px;position:relative;display:grid;place-items:center}
+.hex-shape{position:absolute;inset:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);transition:.2s}
+.hex svg{width:30px;height:30px;position:relative;z-index:1}
+.bcard h4{font-size:14px;font-weight:700}
+.bcard p{font-size:11.5px;color:var(--dim);margin-top:4px;line-height:1.4}
+.bcard.locked{opacity:.5}
+.bcard.locked .hex-shape{background:rgba(255,255,255,.05)!important}
+.bcard.locked .hex svg{color:var(--dim)!important}
+.b-earned{position:absolute;top:14px;right:14px;font-size:10px;font-weight:700;color:var(--emerald);display:flex;align-items:center;gap:4px}
+.b-earned svg{width:12px;height:12px}
+.b-prog{margin-top:12px;font-size:11px;color:var(--dim)}
+.b-prog .bar{margin-top:6px}
+
+/* ---------- statistics ---------- */
+.stats-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px;align-items:start}
+.chart-card{padding:22px 24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass)}
+.chart-card h3{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:9px}
+.chart-card h3 svg{width:16px;height:16px;color:var(--lime)}
+.chart-card .sub{font-size:12px;color:var(--dim);margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px}
+.legend span{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.legend i{width:9px;height:9px;border-radius:3px}
+.donut-wrap{display:flex;align-items:center;gap:26px}
+.donut-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.donut-center b{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.donut-center span{font-size:10.5px;color:var(--dim)}
+.rate-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+
+.heat-card{padding:22px 24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--glass)}
+.heat{display:flex;gap:3px;margin-top:18px;overflow-x:auto;padding-bottom:6px}
+.heat-col{display:flex;flex-direction:column;gap:3px}
+.heat-cell{width:13px;height:13px;border-radius:3px;background:rgba(255,255,255,.05)}
+.heat-legend{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:14px;font-size:11px;color:var(--dim)}
+.heat-legend i{width:12px;height:12px;border-radius:3px}
+.heat-months{display:flex;gap:3px;font-size:10px;color:var(--dim);margin-bottom:6px;padding-left:2px}
+
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+.tooltip-note{font-size:11px;color:var(--dim);text-align:center;margin-top:14px}
+
+.settings-soon{text-align:center;padding:70px 20px;color:var(--muted)}
+.settings-soon svg{width:44px;height:44px;color:var(--dim);margin-bottom:16px}
+.settings-soon h3{font-size:18px;color:var(--text);font-weight:700;margin-bottom:6px}
+
+@media(max-width:1180px){
+  .dash-grid,.detail-grid,.profile-grid,.stats-grid{grid-template-columns:1fr}
+  .ch-grid,.badge-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .mentor{position:static}
+}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .content{padding:20px}
+  .search{max-width:none}
+  .top-right .pill span.lbl{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div class="brand-txt"><strong>QAForge</strong><span>Academy</span></div>
+    </div>
+
+    <div class="nav-label">Menu</div>
+    <button class="nav-item active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-view="challenges">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/><path d="M8 12v8M16 12v8"/></svg>
+      Challenges
+    </button>
+    <button class="nav-item" data-view="leaderboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 0 0-2 2v9h4z"/><path d="M18 9h2a2 2 0 0 1 2 2v9h-4z"/><path d="M9 3h6v17H9z"/></svg>
+      Leaderboard
+    </button>
+    <button class="nav-item" data-view="profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      Profile
+    </button>
+    <button class="nav-item" data-view="badges">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.9 7 22l5-3 5 3-1.2-8.1"/></svg>
+      Badges
+    </button>
+    <button class="nav-item" data-view="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg>
+      Statistics
+    </button>
+    <button class="nav-item" data-view="challenge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v1a4 4 0 0 0-2 3.5V11a5 5 0 0 0 5 5 5 5 0 0 0 5-5V9.5A4 4 0 0 0 15 6V5a3 3 0 0 0-3-3z"/><path d="M8 20l1.5-3M16 20l-1.5-3M12 16v6"/></svg>
+      AI Mentor <span class="nav-badge">Beta</span>
+    </button>
+    <button class="nav-item" data-view="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </button>
+
+    <div class="sidebar-foot">
+      <div class="streak-card">
+        <div class="streak-top">
+          <span>Daily Streak</span>
+          <div class="streak-fire">🔥 <b>7</b> days</div>
+        </div>
+        <div class="streak-dots">
+          <i class="dot on"></i><i class="dot on"></i><i class="dot on"></i><i class="dot on"></i><i class="dot on"></i><i class="dot on"></i><i class="dot on"></i>
+        </div>
+      </div>
+      <div class="xp-mini">
+        <div class="xp-mini-top"><span>XP to Level 3</span><b id="sbXp" class="mono">240 / 500</b></div>
+        <div class="bar"><i id="sbBar" style="width:48%"></i></div>
+      </div>
+      <div class="theme-row">
+        <div class="switch"></div>
+        <span>Dark theme</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Search challenges, badges, users…">
+        <kbd>⌘K</kbd>
+      </label>
+      <div class="top-right">
+        <div class="pill rank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.2 12.5 7 21l5-2.6L17 21l-1.2-8.5"/></svg>
+          <span class="lbl">Rank</span> #2
+        </div>
+        <div class="pill pts">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+          <b id="topPts" class="mono">1,240</b>
+        </div>
+        <button class="icon-btn"><span class="ping"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <div class="avatar">ST</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="view active" id="view-dashboard">
+        <div class="page-head">
+          <div class="eyebrow">Welcome back</div>
+          <h1>Good to see you, Sarvar</h1>
+          <p>You're 260 XP away from Level 3. Keep the streak alive.</p>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-ic" style="background:var(--lime-soft);color:var(--lime)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+            <div class="k">1,240</div><div class="l">Total points</div>
+            <div class="d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>12%</div>
+          </div>
+          <div class="stat">
+            <div class="stat-ic" style="background:var(--emerald-soft);color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m20 6-11 11L4 12"/></svg></div>
+            <div class="k">24</div><div class="l">Challenges solved</div>
+            <div class="d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>3 new</div>
+          </div>
+          <div class="stat">
+            <div class="stat-ic" style="background:var(--cyan-soft);color:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10-3-3"/></svg></div>
+            <div class="k">92%</div><div class="l">Success rate</div>
+            <div class="d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>4%</div>
+          </div>
+          <div class="stat">
+            <div class="stat-ic" style="background:rgba(251,191,36,.14);color:var(--yellow)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1 3-4 4-4 8a4 4 0 0 0 8 0c0-2-1-3-1-5 2 1 4 3 4 6a7 7 0 0 1-14 0c0-5 4-6 7-9z"/></svg></div>
+            <div class="k">7</div><div class="l">Day streak</div>
+            <div class="d" style="color:var(--yellow)">🔥 best</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="continue">
+            <div class="c-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+            <div style="flex:1">
+              <h3>Continue: SauceDemo Login</h3>
+              <p>UI Testing · Easy · You left off at the validation task</p>
+            </div>
+            <button class="btn btn-primary" onclick="openChallenge(0)">Resume <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+
+          <div class="card" style="padding:22px 24px">
+            <div class="sec-head">
+              <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>Recent activity</h2>
+              <button class="link" data-view="stats">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+            <ul class="activity" id="activityList"></ul>
+          </div>
+
+          <div class="card" style="padding:22px 24px">
+            <div class="sec-head">
+              <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4a2 2 0 0 0-2 2v9h4z"/><path d="M18 9h2a2 2 0 0 1 2 2v9h-4z"/><path d="M9 3h6v17H9z"/></svg>Leaderboard</h2>
+              <button class="link" data-view="leaderboard">Full board <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+            <div id="miniLb"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CHALLENGES ============ -->
+      <section class="view" id="view-challenges">
+        <div class="page-head">
+          <h1>Challenge Hub</h1>
+          <p>Hands-on labs on real-world applications. Break things, learn, level up.</p>
+        </div>
+
+        <div class="filters">
+          <div class="filter-group">
+            <span>Domain</span>
+            <button class="chip active" data-cat="all">All</button>
+            <button class="chip" data-cat="UI Testing">UI</button>
+            <button class="chip" data-cat="API Testing">API</button>
+            <button class="chip" data-cat="Performance">Performance</button>
+            <button class="chip" data-cat="Security Testing">Security</button>
+            <button class="chip" data-cat="Automation">Automation</button>
+          </div>
+          <div class="filter-group">
+            <span>Difficulty</span>
+            <button class="chip active" data-diff="all">All</button>
+            <button class="chip diff-easy" data-diff="Easy">Easy</button>
+            <button class="chip diff-medium" data-diff="Medium">Medium</button>
+            <button class="chip diff-hard" data-diff="Hard">Hard</button>
+            <button class="chip diff-expert" data-diff="Expert">Expert</button>
+          </div>
+        </div>
+
+        <div class="ch-grid" id="chGrid"></div>
+
+        <div class="pager">
+          <button class="pg"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="pg active">1</button>
+          <button class="pg">2</button>
+          <button class="pg">3</button>
+          <button class="pg">…</button>
+          <button class="pg">6</button>
+          <button class="pg"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </section>
+
+      <!-- ============ CHALLENGE DETAIL ============ -->
+      <section class="view" id="view-challenge">
+        <button class="back" data-view="challenges"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to challenges</button>
+
+        <div class="detail-grid">
+          <div>
+            <div class="detail-hero">
+              <div class="dh-top">
+                <div class="dh-title">
+                  <div class="ch-ic" id="dhIcon" style="background:var(--lime-soft);color:var(--lime)"></div>
+                  <div>
+                    <h1 id="dhName">SauceDemo Login <span class="badge-diff d-easy" id="dhDiff">Easy</span></h1>
+                    <div class="dh-meta">
+                      <span id="dhCat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> UI Testing</span>
+                      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <span id="dhTime">15 min</span></span>
+                      <span class="xp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> <span id="dhXp">50 XP</span></span>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-ghost">Open Target <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg></button>
+              </div>
+
+              <div class="block">
+                <div class="eyebrow">Mission</div>
+                <p class="body">Test the login page and surface every defect you can find. Cover functionality, validation, and error handling. The page accepts credentials but its input validation is incomplete — your job is to identify exactly where it breaks.</p>
+                <div class="note">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+                  Open the target in a new tab and test carefully before submitting. Take note of what happens with empty fields.
+                </div>
+              </div>
+
+              <div class="block">
+                <div class="eyebrow">Task</div>
+                <p class="body">Select the defect that is present on this login page.</p>
+                <div class="opts" id="opts">
+                  <button class="opt" data-i="0"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m20 6-11 11L4 12"/></svg></span><span>Empty fields are accepted — Login submits without validation</span></button>
+                  <button class="opt" data-i="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m20 6-11 11L4 12"/></svg></span><span>Password can be fewer than 8 characters</span></button>
+                  <button class="opt" data-i="2"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m20 6-11 11L4 12"/></svg></span><span>Error messages are unclear to the user</span></button>
+                  <button class="opt" data-i="3"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m20 6-11 11L4 12"/></svg></span><span>The Login button uses the wrong color</span></button>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-block" id="submitBtn" style="margin-top:22px" onclick="submitAnswer()">Submit answer</button>
+
+              <div class="success" id="successCard">
+                <div class="suc-head">
+                  <div class="suc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m20 6-11 11L4 12"/></svg></div>
+                  <div>
+                    <h3>Challenge completed</h3>
+                    <p>Correct — you found the validation defect.</p>
+                  </div>
+                </div>
+                <div class="suc-rewards">
+                  <div class="reward"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--lime)"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg><div><b style="color:var(--lime)">+50 XP</b><small>Experience earned</small></div></div>
+                  <div class="reward"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan)"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.9 7 22l5-3 5 3-1.2-8.1"/></svg><div><b style="color:var(--cyan)">First Bug</b><small>Badge unlocked</small></div></div>
+                  <div class="reward"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--yellow)"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 2 4-5"/></svg><div><b style="color:var(--yellow)">Level 2</b><small>Progress updated</small></div></div>
+                </div>
+                <div class="explain">
+                  <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>Why this is correct</h4>
+                  <p>The login form does not validate empty inputs. When a user presses Login without entering an email or password, no client-side error is raised and a request is still sent to the backend. Proper validation should block submission and prompt the user before any request is made.</p>
+                  <div class="tips">
+                    <div class="tip"><i class="tk"></i>Always test the empty-state path first — it's the most common validation gap.</div>
+                    <div class="tip"><i class="tk"></i>Confirm the request is actually blocked, not just visually flagged.</div>
+                    <div class="tip"><i class="tk"></i>Error copy should tell the user what to fix, not just that something failed.</div>
+                    <div class="tip"><i class="tk"></i>Check server-side validation too — client-side checks can be bypassed.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI MENTOR -->
+          <div class="mentor">
+            <div class="card" style="padding:20px">
+              <div class="mentor-head">
+                <div class="mentor-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a4 4 0 0 0-2 3.5V11a5 5 0 0 0 10 0V9.5A4 4 0 0 0 15 6V5a3 3 0 0 0-3-3z"/><path d="M9 20l1.5-3M15 20l-1.5-3M12 16v6"/></svg></div>
+                <div><b>AI Mentor</b><br><small>Progressive hints</small></div>
+              </div>
+              <p class="mentor-sub">Stuck? Reveal one hint at a time. Each hint costs a little XP — try to solve it with as few as possible.</p>
+
+              <div class="hint locked" data-h="0">
+                <button class="hint-head" onclick="revealHint(0)">
+                  <span class="hint-num">1</span><b>Where to look first</b>
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+                <div class="hint-body"><p>Focus on the form's validation behaviour. Ask yourself: what happens when a required field is left blank?</p></div>
+              </div>
+
+              <div class="hint locked" data-h="1">
+                <button class="hint-head" onclick="revealHint(1)">
+                  <span class="hint-num">2</span><b>Narrow it down</b>
+                  <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </button>
+                <div class="hint-body"><p>Try submitting the empty form. Watch the network tab — does a request still fire to the backend?</p></div>
+              </div>
+
+              <div class="hint locked" data-h="2">
+                <button class="hint-head" onclick="revealHint(2)">
+                  <span class="hint-num">3</span><b>Almost there</b>
+                  <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </button>
+                <div class="hint-body"><p>The defect is the missing empty-field check. The form should stop submission before sending anything to the server.</p></div>
+              </div>
+
+              <p class="mentor-note">Only <b>one hint</b> can be open at a time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ LEADERBOARD ============ -->
+      <section class="view" id="view-leaderboard">
+        <div class="page-head">
+          <h1>Leaderboard</h1>
+          <p>Global ranking · updated live · top testers this season</p>
+        </div>
+        <div class="podium" id="podium"></div>
+        <div class="lb-table">
+          <div class="lb-th"><span>Rank</span><span>Tester</span><span>Solved</span><span>Streak</span><span>Points</span></div>
+          <div id="lbRows"></div>
+        </div>
+      </section>
+
+      <!-- ============ PROFILE ============ -->
+      <section class="view" id="view-profile">
+        <div class="page-head"><h1>Profile</h1><p>Your progress, stats and goals at a glance.</p></div>
+        <div class="profile-grid">
+          <div class="pcard">
+            <div class="avatar">ST</div>
+            <h2>Sarvar Tolipov</h2>
+            <div class="email">sarvar@example.com</div>
+            <div class="role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M8 13 7 21l5-2.6L17 21l-1-8"/></svg> Junior QA · Level 2</div>
+            <div class="pstats">
+              <div class="pstat lime"><div class="k">1,240</div><div class="l">Points</div></div>
+              <div class="pstat cyan"><div class="k">24</div><div class="l">Solved</div></div>
+              <div class="pstat yellow"><div class="k">6</div><div class="l">Badges</div></div>
+              <div class="pstat emerald"><div class="k">92%</div><div class="l">Success</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="ring-card">
+              <div class="ring">
+                <svg width="118" height="118" viewBox="0 0 118 118">
+                  <circle cx="59" cy="59" r="50" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="11"/>
+                  <circle cx="59" cy="59" r="50" fill="none" stroke="var(--lime)" stroke-width="11" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="88" style="filter:drop-shadow(0 0 6px var(--lime-line))"/>
+                </svg>
+                <div class="ring-center"><b>72%</b><span>weekly</span></div>
+              </div>
+              <div class="ring-info">
+                <h3>Weekly goal</h3>
+                <p>You've earned 360 of 500 XP this week. Solve 3 more challenges to hit your target and keep your streak multiplier.</p>
+                <div class="weekly-goal">
+                  <div class="wg-top"><span>Progress</span><b class="mono">360 / 500 XP</b></div>
+                  <div class="bar"><i style="width:72%"></i></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="lvl-card">
+              <div class="lvl-top">
+                <div class="now"><span class="lvl-chip">LVL 2</span><span style="font-weight:600">Junior QA</span></div>
+                <div class="lvl-next">Next: Level 3 · QA Engineer</div>
+              </div>
+              <div class="bar"><i id="profBar" style="width:48%"></i></div>
+              <div class="lvl-xp">240 / 500 XP to next level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ BADGES ============ -->
+      <section class="view" id="view-badges">
+        <div class="page-head"><h1>Achievements</h1><p>6 of 12 badges unlocked. Each one marks a real testing milestone.</p></div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </section>
+
+      <!-- ============ STATISTICS ============ -->
+      <section class="view" id="view-stats">
+        <div class="page-head"><h1>Statistics</h1><p>Your testing performance over the last 12 weeks.</p></div>
+
+        <div class="mini-stats">
+          <div class="stat"><div class="stat-ic" style="background:var(--lime-soft);color:var(--lime)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div class="k">3,410</div><div class="l">XP this month</div></div>
+          <div class="stat"><div class="stat-ic" style="background:var(--emerald-soft);color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m20 6-11 11L4 12"/></svg></div><div class="k">24</div><div class="l">Total solved</div></div>
+          <div class="stat"><div class="stat-ic" style="background:var(--cyan-soft);color:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12A10 10 0 1 1 12 2"/><path d="m22 4-10 10-3-3"/></svg></div><div class="k">92%</div><div class="l">Success rate</div></div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="chart-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg>Weekly XP</h3>
+            <div class="sub">Experience earned per week · last 8 weeks</div>
+            <div id="xpChart" style="margin-top:16px"></div>
+          </div>
+
+          <div class="chart-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.2-8.5"/><path d="M22 4 12 14.01l-3-3"/></svg>Category distribution</h3>
+            <div class="sub">Where you've been focused</div>
+            <div class="donut-wrap" style="margin-top:18px">
+              <div style="position:relative;width:130px;height:130px;flex:none" id="donut"></div>
+              <div class="legend" style="flex-direction:column;gap:10px;margin-top:0" id="donutLegend"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="heat-card">
+          <h3 style="font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:9px"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Activity</h3>
+          <div class="sub" style="font-size:12px;color:var(--dim);margin-top:2px">247 challenges attempted in the last year</div>
+          <div class="heat-months" id="heatMonths"></div>
+          <div class="heat" id="heat"></div>
+          <div class="heat-legend">
+            Less
+            <i style="background:rgba(255,255,255,.05)"></i>
+            <i style="background:rgba(163,255,18,.25)"></i>
+            <i style="background:rgba(163,255,18,.5)"></i>
+            <i style="background:rgba(163,255,18,.75)"></i>
+            <i style="background:var(--lime)"></i>
+            More
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="view" id="view-settings">
+        <div class="page-head"><h1>Settings</h1><p>Manage your account, preferences and workspace.</p></div>
+        <div class="card settings-soon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <h3>Settings are coming soon</h3>
+          <p>Account, notification and appearance controls will land in the next release.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------- icons ---------------- */
+const IC = {
+  ui:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
+  api:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/></svg>',
+  perf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>',
+  sec:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V5z"/></svg>',
+  auto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4M8 2h8M9 14h.01M15 14h.01"/></svg>',
+  mobile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m20 6-11 11L4 12"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>'
+};
+const catStyle = {
+  'UI Testing':{ic:IC.ui,bg:'var(--lime-soft)',c:'var(--lime)'},
+  'API Testing':{ic:IC.api,bg:'var(--cyan-soft)',c:'var(--cyan)'},
+  'Performance':{ic:IC.perf,bg:'rgba(251,191,36,.14)',c:'var(--yellow)'},
+  'Security Testing':{ic:IC.sec,bg:'rgba(244,63,94,.14)',c:'var(--red)'},
+  'Automation':{ic:IC.auto,bg:'rgba(168,85,247,.15)',c:'#c084fc'}
+};
+const diffClass = {Easy:'d-easy',Medium:'d-medium',Hard:'d-hard',Expert:'d-expert'};
+
+/* ---------------- data ---------------- */
+const challenges = [
+  {name:'SauceDemo Login',cat:'UI Testing',diff:'Easy',time:'15 min',xp:50,prog:100,done:true,desc:'Test the login flow of a demo store and surface validation defects in the auth form.'},
+  {name:'ReqRes API Basics',cat:'API Testing',diff:'Easy',time:'20 min',xp:50,prog:100,done:true,desc:'Exercise the core REST endpoints — status codes, payload shape, and error responses.'},
+  {name:'DemoQA Forms',cat:'UI Testing',diff:'Easy',time:'20 min',xp:50,prog:100,done:true,desc:'Validate a complex form: required fields, formats, and inline error messaging.'},
+  {name:'k6 Load Baseline',cat:'Performance',diff:'Medium',time:'25 min',xp:100,prog:40,done:false,desc:'Run a baseline load test and identify the response-time threshold where latency degrades.'},
+  {name:'OWASP Juice Shop',cat:'Security Testing',diff:'Hard',time:'45 min',xp:150,prog:0,done:false,desc:'Hunt for real vulnerabilities — info disclosure, XSS, and broken access control.'},
+  {name:'Restful Booker',cat:'API Testing',diff:'Medium',time:'30 min',xp:100,prog:0,done:false,desc:'Test a booking API end-to-end and design edge cases around auth and partial updates.'},
+  {name:'Cypress E2E Suite',cat:'Automation',diff:'Medium',time:'35 min',xp:100,prog:0,done:false,desc:'Automate a checkout journey and make it resilient to flaky selectors and timing.'},
+  {name:'JWT Auth Bypass',cat:'Security Testing',diff:'Expert',time:'60 min',xp:200,prog:0,done:false,desc:'Analyze token handling and attempt to bypass authentication on a protected route.'},
+  {name:'GraphQL Explorer',cat:'API Testing',diff:'Medium',time:'30 min',xp:100,prog:0,done:false,desc:'Probe a GraphQL schema for over-fetching, N+1 issues, and missing depth limits.'}
+];
+
+const activity = [
+  {name:'SauceDemo Login',xp:50,t:'2 minutes ago'},
+  {name:'ReqRes API Basics',xp:50,t:'25 minutes ago'},
+  {name:'DemoQA Forms',xp:50,t:'1 hour ago'},
+  {name:'k6 Load Baseline',xp:100,t:'Yesterday'},
+  {name:'OWASP Juice Shop',xp:150,t:'2 days ago'}
+];
+
+const leaders = [
+  {n:'Ali Akbarov',r:'Senior QA',p:2350,solved:47,streak:21,f:'🇺🇿',t:1},
+  {n:'Sarvar Tolipov',r:'Junior QA',p:2200,solved:24,streak:7,f:'🇺🇿',me:true,t:2},
+  {n:'Aziza Karimova',r:'QA Engineer',p:2050,solved:41,streak:12,f:'🇰🇿',t:-1},
+  {n:'Bekzod Ahmedov',r:'QA Engineer',p:1980,solved:38,streak:5,f:'🇺🇿',t:1},
+  {n:'Diyor Mirzayev',r:'Junior QA',p:1750,solved:29,streak:3,f:'🇹🇯',t:0},
+  {n:'Nilufar Yusupova',r:'QA Lead',p:1690,solved:35,streak:9,f:'🇺🇿',t:1},
+  {n:'Timur Rashidov',r:'Automation QA',p:1540,solved:31,streak:2,f:'🇰🇬',t:-1},
+  {n:'Kamila Sharipova',r:'QA Engineer',p:1420,solved:27,streak:6,f:'🇰🇿',t:0}
+];
+
+const badges = [
+  {n:'First Bug',d:'Solve your first challenge',ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="6" width="8" height="10" rx="4"/><path d="M8 9H4M8 13H4M16 9h4M16 13h4M10 3 8 6M14 3l2 3M12 16v5"/></svg>',c:'var(--lime)',earned:true},
+  {n:'UI Explorer',d:'Solve 5 UI challenges',ic:IC.ui,c:'var(--cyan)',earned:true},
+  {n:'API Rookie',d:'Solve 5 API challenges',ic:IC.api,c:'#a855f7',earned:true},
+  {n:'7-Day Streak',d:'Stay active 7 days',ic:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1 3-4 4-4 8a4 4 0 0 0 8 0c0-2-1-3-1-5 2 1 4 3 4 6a7 7 0 0 1-14 0c0-5 4-6 7-9z"/></svg>',c:'var(--yellow)',earned:true},
+  {n:'Bug Hunter',d:'Find 10 bugs',ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',c:'var(--emerald)',earned:true},
+  {n:'Speed Tester',d:'Solve 3 under time',ic:IC.clock,c:'var(--red)',earned:true},
+  {n:'Problem Solver',d:'Solve 20 challenges',ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.66 18H14.34M11 22h2M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>',c:'#a855f7',earned:false,prog:24,goal:20},
+  {n:'Security Hunter',d:'Solve 5 security labs',ic:IC.sec,c:'var(--red)',earned:false,prog:2,goal:5},
+  {n:'Automator',d:'Build 5 test suites',ic:IC.auto,c:'var(--cyan)',earned:false,prog:1,goal:5},
+  {n:'Perfectionist',d:'100% on 10 labs',ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>',c:'var(--lime)',earned:false,prog:6,goal:10},
+  {n:'Load Master',d:'Pass 5 perf tests',ic:IC.perf,c:'var(--yellow)',earned:false,prog:1,goal:5},
+  {n:'Grandmaster',d:'Reach Level 10',ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15 9l7 .5-5.5 4.5L18 21l-6-4-6 4 1.5-7L2 9.5 9 9z"/></svg>',c:'var(--lime)',earned:false,prog:2,goal:10}
+];
+
+/* ---------------- render ---------------- */
+function renderChallenges(cat='all',diff='all'){
+  const grid = document.getElementById('chGrid');
+  const list = challenges.filter(c => (cat==='all'||c.cat===cat) && (diff==='all'||c.diff===diff));
+  grid.innerHTML = list.map(c=>{
+    const s = catStyle[c.cat];
+    const i = challenges.indexOf(c);
+    return `<button class="ch-card" onclick="openChallenge(${i})">
+      <div class="ch-top">
+        <div class="ch-ic" style="background:${s.bg};color:${s.c}">${s.ic}</div>
+        <span class="badge-diff ${diffClass[c.diff]}">${c.diff}</span>
+      </div>
+      <div><h3>${c.name}</h3><div class="ch-cat">${c.cat}</div></div>
+      <p class="ch-desc">${c.desc}</p>
+      <div class="ch-meta">
+        <span>${IC.clock} ${c.time}</span>
+        <span class="xp">${IC.bolt} ${c.xp} XP</span>
+      </div>
+      ${c.prog>0?`<div class="ch-prog"><div class="ch-prog-top"><span>Progress</span><span>${c.prog}%</span></div><div class="bar"><i style="width:${c.prog}%"></i></div></div>`:''}
+      <div class="ch-foot">
+        ${c.done?`<span class="done-tag">${IC.check} Completed</span><span class="link">Review</span>`
+          :`<span class="btn btn-primary btn-sm">Start challenge</span><span class="link">Details ›</span>`}
+      </div>
+    </button>`;
+  }).join('');
+}
+
+function renderActivity(){
+  document.getElementById('activityList').innerHTML = activity.map(a=>`
+    <li>
+      <div class="act-ic">${IC.check}</div>
+      <div class="act-main"><b>${a.name}</b><span>${a.t}</span></div>
+      <span class="act-xp">+${a.xp} XP</span>
+    </li>`).join('');
+}
+
+function renderMiniLb(){
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('miniLb').innerHTML = leaders.slice(0,5).map((l,i)=>`
+    <div class="lb-row ${l.me?'me':''}">
+      <span class="lb-rank ${i<3?'medal':''}">${i<3?medals[i]:i+1}</span>
+      <div class="avatar sm">${l.n.split(' ').map(x=>x[0]).join('')}</div>
+      <span class="lb-name">${l.n}</span>
+      <span class="lb-pts mono">${l.p.toLocaleString()}</span>
+    </div>`).join('');
+}
+
+function renderPodium(){
+  const order=[leaders[1],leaders[0],leaders[2]];
+  const cls=['p2','p1','p3'];
+  document.getElementById('podium').innerHTML = order.map((l,i)=>`
+    <div class="pod ${cls[i]}">
+      ${cls[i]==='p1'?'<div class="pod-crown">👑</div>':''}
+      <div class="pod-medal">#${cls[i]==='p1'?1:cls[i]==='p2'?2:3}</div>
+      <div class="avatar">${l.n.split(' ').map(x=>x[0]).join('')}</div>
+      <div class="pod-name">${l.n} <span class="flag">${l.f}</span></div>
+      <div class="pod-role">${l.r}</div>
+      <div class="pod-pts mono">${l.p.toLocaleString()}</div>
+    </div>`).join('');
+}
+
+function renderLbRows(){
+  const trendIc={1:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>',
+                 '-1':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>',
+                 0:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/></svg>'};
+  const trendCls={1:'up','-1':'down',0:'flat'};
+  document.getElementById('lbRows').innerHTML = leaders.map((l,i)=>`
+    <div class="lb-tr ${l.me?'me':''}" style="position:relative">
+      <span class="rk">${i+1}</span>
+      <div class="lb-user">
+        <div class="avatar sm">${l.n.split(' ').map(x=>x[0]).join('')}</div>
+        <div><b>${l.n} <span class="flag">${l.f}</span></b><small>${l.r}</small></div>
+      </div>
+      <span class="lb-cell">${l.solved} solved</span>
+      <span class="lb-cell">🔥 ${l.streak}d</span>
+      <span class="lb-cell pts">${l.p.toLocaleString()}
+        <span class="trend ${trendCls[l.t]}">${trendIc[l.t]}</span>
+      </span>
+    </div>`).join('');
+}
+
+function renderBadges(){
+  document.getElementById('badgeGrid').innerHTML = badges.map(b=>`
+    <div class="bcard ${b.earned?'':'locked'}">
+      ${b.earned?`<div class="b-earned">${IC.check} Earned</div>`:''}
+      <div class="hex">
+        <div class="hex-shape" style="background:${b.earned?`linear-gradient(140deg, ${b.c}22, ${b.c}0a)`:''};box-shadow:${b.earned?`0 0 0 1px ${b.c}55, 0 8px 22px -10px ${b.c}`:''}"></div>
+        <div style="color:${b.earned?b.c:''};width:30px;height:30px">${b.ic}</div>
+      </div>
+      <h4>${b.n}</h4>
+      <p>${b.d}</p>
+      ${!b.earned&&b.goal?`<div class="b-prog">${Math.min(b.prog,b.goal)}/${b.goal}<div class="bar"><i style="width:${Math.min(100,b.prog/b.goal*100)}%"></i></div></div>`:''}
+    </div>`).join('');
+}
+
+/* ---- charts ---- */
+function renderXpChart(){
+  const data=[280,420,360,510,340,480,560,610];
+  const max=Math.max(...data), W=100, H=150, gap=6, bw=(W-gap*(data.length-1))/data.length;
+  let bars='';
+  data.forEach((d,i)=>{
+    const h=d/max*100, x=i*(bw+gap), y=100-h;
+    bars+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="1.6" fill="url(#lg)" />`;
+  });
+  const labels=['W1','W2','W3','W4','W5','W6','W7','W8'];
+  document.getElementById('xpChart').innerHTML=`
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:${H}px">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#A3FF12"/><stop offset="1" stop-color="#A3FF12" stop-opacity=".35"/>
+      </linearGradient></defs>
+      ${[25,50,75].map(y=>`<line x1="0" y1="${y}" x2="100" y2="${y}" stroke="rgba(255,255,255,.05)" stroke-width=".4"/>`).join('')}
+      ${bars}
+    </svg>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--dim)" class="mono">
+      ${labels.map(l=>`<span>${l}</span>`).join('')}
+    </div>`;
+}
+
+function renderDonut(){
+  const data=[{l:'UI Testing',v:38,c:'#A3FF12'},{l:'API Testing',v:29,c:'#22D3EE'},{l:'Security',v:18,c:'#F43F5E'},{l:'Performance',v:15,c:'#FBBF24'}];
+  const total=data.reduce((s,d)=>s+d.v,0);
+  const r=54,C=2*Math.PI*r; let off=0,segs='';
+  data.forEach(d=>{
+    const len=d.v/total*C;
+    segs+=`<circle cx="65" cy="65" r="${r}" fill="none" stroke="${d.c}" stroke-width="14"
+      stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 65 65)"
+      style="filter:drop-shadow(0 0 3px ${d.c}55)"/>`;
+    off+=len;
+  });
+  document.getElementById('donut').innerHTML=`
+    <svg width="130" height="130" viewBox="0 0 130 130">${segs}</svg>
+    <div class="donut-center"><b class="mono">24</b><span>challenges</span></div>`;
+  document.getElementById('donutLegend').innerHTML=data.map(d=>`
+    <span><i style="background:${d.c}"></i>${d.l} · <b style="color:var(--text);font-family:'JetBrains Mono'">${d.v}%</b></span>`).join('');
+}
+
+function renderHeat(){
+  const weeks=52, days=7;
+  let html='';
+  for(let w=0;w<weeks;w++){
+    html+='<div class="heat-col">';
+    for(let d=0;d<days;d++){
+      const lvl=Math.random();
+      let bg='rgba(255,255,255,.05)';
+      if(lvl>.85)bg='var(--lime)';
+      else if(lvl>.7)bg='rgba(163,255,18,.7)';
+      else if(lvl>.5)bg='rgba(163,255,18,.45)';
+      else if(lvl>.32)bg='rgba(163,255,18,.22)';
+      html+=`<div class="heat-cell" style="background:${bg}"></div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('heat').innerHTML=html;
+  const months=['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'];
+  document.getElementById('heatMonths').innerHTML=months.map(m=>`<span style="width:${52*16/12}px">${m}</span>`).join('');
+}
+
+/* ---------------- interactions ---------------- */
+const views=document.querySelectorAll('.view');
+const navItems=document.querySelectorAll('.nav-item');
+function switchView(v){
+  views.forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
+  navItems.forEach(n=>n.classList.toggle('active',n.dataset.view===v));
+  document.querySelector('.content').scrollTo?.(0,0);
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-view]').forEach(el=>{
+  el.addEventListener('click',()=>switchView(el.dataset.view));
+});
+
+function openChallenge(i){
+  const c=challenges[i], s=catStyle[c.cat];
+  document.getElementById('dhIcon').innerHTML=s.ic;
+  document.getElementById('dhIcon').style.background=s.bg;
+  document.getElementById('dhIcon').style.color=s.c;
+  document.getElementById('dhName').innerHTML=`${c.name} <span class="badge-diff ${diffClass[c.diff]}">${c.diff}</span>`;
+  document.getElementById('dhCat').innerHTML=`${s.ic} ${c.cat}`;
+  document.getElementById('dhTime').textContent=c.time;
+  document.getElementById('dhXp').textContent=c.xp+' XP';
+  resetChallenge();
+  switchView('challenge');
+}
+
+/* multiple choice */
+let selected=null, solved=false;
+document.querySelectorAll('#opts .opt').forEach(o=>{
+  o.addEventListener('click',()=>{
+    if(solved)return;
+    document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel');
+    selected=+o.dataset.i;
+  });
+});
+function resetChallenge(){
+  selected=null;solved=false;
+  document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel','correct','wrong'));
+  document.getElementById('successCard').classList.remove('show');
+  const b=document.getElementById('submitBtn');
+  b.textContent='Submit answer';b.disabled=false;b.style.display='';
+  document.querySelectorAll('.hint').forEach((h,i)=>{
+    h.classList.remove('open','revealed');
+    h.classList.toggle('locked',i!==0);
+    const head=h.querySelector('.hint-head svg:last-child');
+  });
+}
+function submitAnswer(){
+  if(solved)return;
+  if(selected===null){shake();return;}
+  const opts=document.querySelectorAll('#opts .opt');
+  if(selected===0){
+    solved=true;
+    opts[0].classList.remove('sel');opts[0].classList.add('correct');
+    const b=document.getElementById('submitBtn');b.style.display='none';
+    const card=document.getElementById('successCard');
+    card.classList.add('show');
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    animatePoints();
+    burst();
+  }else{
+    opts[selected].classList.add('wrong');
+    opts[0].classList.add('correct');
+    const b=document.getElementById('submitBtn');
+    b.textContent='Not quite — check the AI Mentor hints';
+    setTimeout(()=>{b.textContent='Submit answer';opts.forEach(o=>o.classList.remove('wrong','correct'));},2200);
+    shake();
+  }
+}
+function shake(){
+  const b=document.getElementById('submitBtn');
+  b.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:280});
+}
+function animatePoints(){
+  const el=document.getElementById('topPts');
+  let cur=1240, target=1290;
+  const t=setInterval(()=>{cur+=5;el.textContent=cur.toLocaleString();if(cur>=target)clearInterval(t);},18);
+  document.getElementById('sbBar').style.width='58%';
+  document.getElementById('sbXp').textContent='290 / 500';
+  const pb=document.getElementById('profBar');if(pb)pb.style.width='58%';
+}
+function burst(){
+  const card=document.getElementById('successCard');
+  const rect=card.getBoundingClientRect();
+  const colors=['#A3FF12','#22D3EE','#FBBF24','#34D399'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:fixed;left:${rect.left+rect.width/2}px;top:${rect.top+30}px;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:999;background:${colors[i%4]}`;
+    document.body.appendChild(p);
+    const ang=Math.random()*Math.PI*2, dist=60+Math.random()*140;
+    p.animate([{transform:'translate(0,0) rotate(0)',opacity:1},
+      {transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist+80}px) rotate(${Math.random()*360}deg)`,opacity:0}],
+      {duration:900+Math.random()*500,easing:'cubic-bezier(.2,.6,.3,1)'}).onfinish=()=>p.remove();
+  }
+}
+
+/* AI mentor progressive hints */
+function revealHint(i){
+  const hints=document.querySelectorAll('.hint');
+  const h=hints[i];
+  if(h.classList.contains('locked'))return;
+  const wasOpen=h.classList.contains('open');
+  hints.forEach(x=>{x.classList.remove('open');x.querySelector('.hint-body').style.maxHeight=null;});
+  if(!wasOpen){
+    h.classList.add('open','revealed');
+    const body=h.querySelector('.hint-body');
+    body.style.maxHeight=body.scrollHeight+'px';
+    // unlock next
+    if(hints[i+1]){
+      hints[i+1].classList.remove('locked');
+      const head=hints[i+1].querySelector('.hint-head');
+      const lock=head.querySelector('.lock');
+      if(lock){
+        lock.outerHTML='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>';
+      }
+    }
+  }
+}
+
+/* filters */
+document.querySelectorAll('[data-cat]').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('[data-cat]').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    applyFilters();
+  });
+});
+document.querySelectorAll('[data-diff]').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('[data-diff]').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    applyFilters();
+  });
+});
+function applyFilters(){
+  const cat=document.querySelector('[data-cat].active').dataset.cat;
+  const diff=document.querySelector('[data-diff].active').dataset.diff;
+  renderChallenges(cat,diff);
+}
+
+/* init */
+renderChallenges();
+renderActivity();
+renderMiniLb();
+renderPodium();
+renderLbRows();
+renderBadges();
+renderXpChart();
+renderDonut();
+renderHeat();
+</script>
+</body>
+</html>
