@@ -21,6 +21,8 @@ interface AuthContextValue {
   loading: boolean;
   signOut: () => Promise<void>;
   bumpPoints: (amount: number) => void;
+  /** Updates profiles.display_name and reflects it locally on success. */
+  updateDisplayName: (displayName: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -74,8 +76,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile((prev) => (prev ? { ...prev, points: prev.points + amount } : prev));
   }, []);
 
+  const updateDisplayName = useCallback(
+    async (displayName: string): Promise<{ error: string | null }> => {
+      if (!user) return { error: "Tizimga kirilmagan" };
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("profiles")
+        .update({ display_name: displayName })
+        .eq("id", user.id);
+      if (error) return { error: error.message };
+      setProfile((prev) => (prev ? { ...prev, display_name: displayName } : prev));
+      return { error: null };
+    },
+    [user]
+  );
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut, bumpPoints }}>
+    <AuthContext.Provider
+      value={{ user, profile, loading, signOut, bumpPoints, updateDisplayName }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAForge Academy - Tolipov Sarvar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #09090B;
+            --lime: #A3FF12;
+            --cyan: #22D3EE;
+            --text-main: #F4F4F6;
+            --text-muted: #9A9AA3;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --radius-panel: 20px;
+            --radius-btn: 8px;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Glassmorphism Panels */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1.5rem;
+        }
+
+        h2, h3 {
+            font-weight: 600;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+
+        .user-details h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--lime);
+            color: var(--lime);
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-btn);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(163, 255, 18, 0.1);
+        }
+
+        /* Rank Card Section */
+        .rank-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .rank-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .rank-icon {
+            width: 56px;
+            height: 56px;
+            color: var(--lime);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rank-info .label {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .rank-info h2 {
+            font-size: 1.75rem;
+            color: var(--text-main);
+        }
+
+        .rank-right {
+            flex-grow: 1;
+            max-width: 400px;
+            min-width: 250px;
+        }
+
+        .xp-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--lime);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .next-rank {
+            text-align: right;
+            font-size: 0.75rem;
+        }
+
+        /* Two Columns Layout */
+        .grid-columns {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        /* Left Column: Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-val {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Left Column: Activity Empty State */
+        .empty-activity {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            gap: 1rem;
+        }
+
+        .empty-icon {
+            color: var(--panel-border);
+            width: 48px;
+            height: 48px;
+        }
+
+        .empty-activity p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .btn-link {
+            color: var(--lime);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-link:hover {
+            opacity: 0.8;
+        }
+
+        /* Right Column: Progress Circles */
+        .progress-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+            gap: 1rem;
+        }
+
+        .circular-chart {
+            display: block;
+            margin: 0 auto;
+            max-width: 120px;
+            max-height: 120px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 2.5;
+        }
+
+        .circle {
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .circle.lime { stroke: var(--lime); }
+        .circle.cyan { stroke: var(--cyan); }
+
+        .percentage {
+            fill: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .grid-columns {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .btn-outline {
+                width: 100%;
+                text-align: center;
+            }
+            .rank-right {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- HEADER -->
+    <header class="panel header">
+        <div class="header-left">
+            <div class="avatar">
+                <!-- Lime Hexagon Avatar with ST -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="50 5, 90 27.5, 90 72.5, 50 95, 10 72.5, 10 27.5" 
+                             fill="rgba(163, 255, 18, 0.05)" 
+                             stroke="var(--lime)" 
+                             stroke-width="2"/>
+                    <text x="50%" y="52%" 
+                          text-anchor="middle" 
+                          dominant-baseline="middle" 
+                          fill="var(--lime)" 
+                          font-size="28" 
+                          font-weight="600" 
+                          font-family="Inter, sans-serif">ST</text>
+                </svg>
+            </div>
+            <div class="user-details">
+                <h1>Tolipov Sarvar</h1>
+                <p class="text-muted">tolipov.sarvar@email.uz</p>
+            </div>
+        </div>
+        <button class="btn-outline">Profilni tahrirlash</button>
+    </header>
+
+    <!-- RANK CARD -->
+    <section class="panel rank-card">
+        <div class="rank-left">
+            <div class="rank-icon">
+                <!-- Flat SVG Shield/Hexagon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 8v4"/>
+                    <path d="M12 16h.01"/>
+                </svg>
+            </div>
+            <div class="rank-info">
+                <span class="label">Daraja</span>
+                <h2>Yangi boshlovchi</h2>
+            </div>
+        </div>
+        <div class="rank-right">
+            <div class="xp-top">
+                <span>0 / 40</span>
+            </div>
+            <div class="progress-track">
+                <!-- 0% progress fill -->
+                <div class="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="next-rank text-muted">Keyingi daraja: Junior Tester</div>
+        </div>
+    </section>
+
+    <!-- TWO COLUMNS -->
+    <div class="grid-columns">
+        
+        <!-- LEFT COLUMN -->
+        <div class="col-left" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Statistika Card -->
+            <div class="panel">
+                <h3 class="panel-title">Statistika</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-val">0</span>
+                        <span class="stat-label">Umumiy ball</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">0</span>
+                        <span class="stat-label">Yechilgan challenge</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">3</span>
+                        <span class="stat-label">Bajarilgan darslar</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">170</span>
+                        <span class="stat-label">Jami darslar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Faoliyat Card (Empty State) -->
+            <div class="panel">
+                <h3 class="panel-title">Faoliyat</h3>
+                <div class="empty-activity">
+                    <!-- Subtle Activity Icon -->
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <polyline points="3 9 21 9"/>
+                        <polyline points="9 21 9 9"/>
+                    </svg>
+                    <p>Hali faoliyat yo'q. Birinchi darsni boshlang.</p>
+                    <a href="#" class="btn-link">Darslarni ko'rish 
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-right" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- O'quv progressi Card -->
+            <div class="panel">
+                <h3 class="panel-title">O'quv progressi</h3>
+                <div class="progress-card">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <!-- Stroke-dasharray is circumference (100). Stroke-dashoffset is 100 - percent. For 2%, it is 98 -->
+                        <path class="circle lime"
+                            stroke-dasharray="100, 100"
+                            stroke-dashoffset="98"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="18" class="percentage">2%</text>
+                    </svg>
+                    <p class="text-muted">3 / 170 section bajarildi</p>
+                </div>
+            </div>
+
+            <!-- Challenge progressi Card -->
+            <div class="panel">
+                <h3 class="panel-title">Challenge progressi</h3>
+                <div class="progress-card">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <!-- 0% progress -> offset 100 -->
+                        <path class="circle cyan"
+                            stroke-dasharray="100, 100"
+                            stroke-dashoffset="100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="18" class="percentage">0%</text>
+                    </svg>
+                    <p class="text-muted">0 / 5 challenge yechildi</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

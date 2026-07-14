@@ -1,110 +1,278 @@
 "use client";
 
-import { IconProfile, IconTrophy } from "@/lib/icons";
+import { useState } from "react";
+import Link from "next/link";
 import { useScore } from "@/lib/score-context";
 import { useLessonProgress } from "@/lib/lesson-progress-context";
 import { useAuth } from "@/lib/auth-context";
-import { ALL_SECTIONS } from "@/data/lessons";
-import { getOverallProgress } from "@/lib/lessons";
+import { ALL_SECTIONS, getSection } from "@/data/lessons";
+import { CHALLENGES } from "@/data/challenges";
 import { getRankProgress } from "@/lib/scoring";
+import EditProfileModal from "@/components/EditProfileModal";
+import { IconShield, IconGrid, IconArrowRight, IconBolt, IconCheck } from "@/lib/icons";
 
 const SECTION_RING_RADIUS = 50;
 const SECTION_RING_CIRCUMFERENCE = 2 * Math.PI * SECTION_RING_RADIUS;
+const CHALLENGE_RING_RADIUS = 50;
+const CHALLENGE_RING_CIRCUMFERENCE = 2 * Math.PI * CHALLENGE_RING_RADIUS;
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function timeAgoUz(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diffMs / 60000);
+  if (min < 1) return "hozirgina";
+  if (min < 60) return `${min} daqiqa oldin`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr} soat oldin`;
+  const day = Math.floor(hr / 24);
+  if (day < 30) return `${day} kun oldin`;
+  return new Date(iso).toLocaleDateString("uz-UZ");
+}
+
+interface ActivityItem {
+  key: string;
+  type: "challenge" | "lesson";
+  title: string;
+  subtitle: string;
+  xpLabel: string;
+  date: string;
+}
 
 export default function ProfilePage() {
-  const { points, solvedIds } = useScore();
-  const { isCompleted } = useLessonProgress();
+  const { points, solvedIds, submissions } = useScore();
+  const { completedIds, completions } = useLessonProgress();
   const { user, profile } = useAuth();
+  const [editing, setEditing] = useState(false);
 
   const rankProgress = getRankProgress(points);
 
   const totalSections = ALL_SECTIONS.length;
-  const { completed: completedSections, percent: sectionPercent } = getOverallProgress(isCompleted);
+  const completedSections = completedIds.length;
+  const sectionPercent =
+    totalSections === 0 ? 0 : Math.round((completedSections / totalSections) * 100);
   const sectionOffset = SECTION_RING_CIRCUMFERENCE * (1 - sectionPercent / 100);
+
+  const totalChallenges = CHALLENGES.length;
+  const solvedCount = solvedIds.length;
+  const challengePercent =
+    totalChallenges === 0 ? 0 : Math.round((solvedCount / totalChallenges) * 100);
+  const challengeOffset = CHALLENGE_RING_CIRCUMFERENCE * (1 - challengePercent / 100);
+
+  const activity: ActivityItem[] = [
+    ...submissions.map((s) => ({
+      key: `c-${s.challengeId}`,
+      type: "challenge" as const,
+      title: CHALLENGES.find((c) => c.id === s.challengeId)?.title ?? s.challengeId,
+      subtitle: timeAgoUz(s.solvedAt),
+      xpLabel: `+${s.pointsEarned} XP`,
+      date: s.solvedAt,
+    })),
+    ...completions.map((c) => ({
+      key: `l-${c.sectionId}`,
+      type: "lesson" as const,
+      title: getSection(c.sectionId)?.title ?? c.sectionId,
+      subtitle: timeAgoUz(c.completedAt),
+      xpLabel: "Bajarildi",
+      date: c.completedAt,
+    })),
+  ]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 6);
+
+  const displayName = profile?.display_name ?? "…";
 
   return (
     <section>
-      <div className="page-head">
-        <h1>Profile</h1>
-      </div>
-
-      <div className="profile-grid">
-        <div className="pcard">
-          <div className="avatar">
-            <IconProfile />
-          </div>
-          <h2>{profile?.display_name ?? "…"}</h2>
-          <div className="email">{user?.email ?? ""}</div>
-          <div className="role-badge">
-            <IconTrophy /> {rankProgress.rank}
-          </div>
-          <div className="pstats">
-            <div className="pstat lime">
-              <div className="k">{points.toLocaleString()}</div>
-              <div className="l">Ball</div>
+      <div className="profile-stack">
+        <div className="card profile-header">
+          <div className="profile-header-left">
+            <div className="profile-avatar" aria-hidden>
+              <svg viewBox="0 0 100 100">
+                <polygon
+                  points="50 5, 90 27.5, 90 72.5, 50 95, 10 72.5, 10 27.5"
+                  fill="var(--lime-soft)"
+                  stroke="var(--lime)"
+                  strokeWidth="2"
+                />
+              </svg>
+              <span>{initials(displayName)}</span>
             </div>
-            <div className="pstat cyan">
-              <div className="k">{solvedIds.length}</div>
-              <div className="l">Yechilgan</div>
+            <div>
+              <h1 className="profile-name">{displayName}</h1>
+              <p className="profile-email">{user?.email ?? ""}</p>
             </div>
           </div>
+          <button type="button" className="btn-outline" onClick={() => setEditing(true)}>
+            Profilni tahrirlash
+          </button>
         </div>
 
-        <div>
-          {totalSections > 0 && (
-            <div className="ring-card">
-              {/* Tailwind's built-in `ring` box-shadow utility collides with this
-                  class name, so the ring wrapper is positioned inline instead. */}
-              <div style={{ position: "relative", width: 118, height: 118, flex: "none" }}>
-                <svg width="118" height="118" viewBox="0 0 118 118" style={{ transform: "rotate(-90deg)" }}>
-                  <circle cx="59" cy="59" r={SECTION_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.07)" strokeWidth="11" />
-                  <circle
-                    cx="59"
-                    cy="59"
-                    r={SECTION_RING_RADIUS}
-                    fill="none"
-                    stroke="var(--lime)"
-                    strokeWidth="11"
-                    strokeLinecap="round"
-                    strokeDasharray={SECTION_RING_CIRCUMFERENCE}
-                    strokeDashoffset={sectionOffset}
-                    style={{ filter: "drop-shadow(0 0 6px var(--lime-line))" }}
-                  />
-                </svg>
-                <div className="ring-center">
-                  <b>{sectionPercent}%</b>
-                  <span>section&apos;lar</span>
-                </div>
-              </div>
-              <div className="ring-info">
-                <h3>Darslar progressi</h3>
-                <p>
-                  {totalSections} ta section&apos;dan {completedSections} tasini yakunladingiz.
-                </p>
-              </div>
+        <div className="card profile-rank-card">
+          <div className="profile-rank-left">
+            <div className="profile-rank-icon">
+              <IconShield />
             </div>
-          )}
-
-          <div className="lvl-card">
-            <div className="lvl-top">
-              <div className="now">
-                <span className="lvl-chip">{rankProgress.rank}</span>
-              </div>
-              {rankProgress.nextRank && (
-                <div className="lvl-next">Keyingi: {rankProgress.nextRank}</div>
-              )}
+            <div>
+              <span className="profile-rank-label">Daraja</span>
+              <h2 className="profile-rank-name">{rankProgress.rank}</h2>
+            </div>
+          </div>
+          <div className="profile-rank-right">
+            <div className="profile-xp-top">
+              {rankProgress.isMaxRank
+                ? `${rankProgress.points.toLocaleString()} ball`
+                : `${rankProgress.points} / ${rankProgress.pointsForNext}`}
             </div>
             <div className="bar">
               <i style={{ width: `${rankProgress.percent}%` }} />
             </div>
-            <div className="lvl-xp">
+            <div className="profile-next-rank">
               {rankProgress.isMaxRank
                 ? "Eng yuqori darajadasiz"
-                : `${rankProgress.points} / ${rankProgress.pointsForNext} ball keyingi darajagacha`}
+                : `Keyingi daraja: ${rankProgress.nextRank}`}
+            </div>
+          </div>
+        </div>
+
+        <div className="profile-columns">
+          <div className="grid">
+            <div className="card">
+              <h3 className="panel-title">Statistika</h3>
+              <div className="profile-stat-grid">
+                <div className="profile-stat-card">
+                  <span className="profile-stat-val">{points.toLocaleString()}</span>
+                  <span className="profile-stat-label">Umumiy ball</span>
+                </div>
+                <div className="profile-stat-card">
+                  <span className="profile-stat-val">{solvedCount}</span>
+                  <span className="profile-stat-label">Yechilgan challenge</span>
+                </div>
+                <div className="profile-stat-card">
+                  <span className="profile-stat-val">{completedSections}</span>
+                  <span className="profile-stat-label">Bajarilgan darslar</span>
+                </div>
+                <div className="profile-stat-card">
+                  <span className="profile-stat-val">{totalSections}</span>
+                  <span className="profile-stat-label">Jami darslar</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 className="panel-title">Faoliyat</h3>
+              {activity.length === 0 ? (
+                <div className="profile-empty">
+                  <div className="profile-empty-icon">
+                    <IconGrid />
+                  </div>
+                  <p>Hali faoliyat yo&apos;q. Birinchi darsni boshlang.</p>
+                  <Link href="/learn" className="btn-link">
+                    Darslarni ko&apos;rish <IconArrowRight />
+                  </Link>
+                </div>
+              ) : (
+                <ul className="activity">
+                  {activity.map((item) => (
+                    <li key={item.key}>
+                      <div
+                        className="act-ic"
+                        style={
+                          item.type === "challenge"
+                            ? { background: "var(--lime-soft)", color: "var(--lime)" }
+                            : { background: "var(--cyan-soft)", color: "var(--cyan)" }
+                        }
+                      >
+                        {item.type === "challenge" ? <IconBolt /> : <IconCheck />}
+                      </div>
+                      <div className="act-main">
+                        <b>{item.title}</b>
+                        <span>{item.subtitle}</span>
+                      </div>
+                      <div
+                        className="act-xp"
+                        style={item.type === "lesson" ? { color: "var(--cyan)" } : undefined}
+                      >
+                        {item.xpLabel}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          <div className="grid">
+            <div className="card">
+              <h3 className="panel-title">O&apos;quv progressi</h3>
+              <div className="profile-ring-wrap">
+                <div style={{ position: "relative", width: 120, height: 120 }}>
+                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
+                    <circle cx="60" cy="60" r={SECTION_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="8" />
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r={SECTION_RING_RADIUS}
+                      fill="none"
+                      stroke="var(--lime)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={SECTION_RING_CIRCUMFERENCE}
+                      strokeDashoffset={sectionOffset}
+                      style={{ filter: "drop-shadow(0 0 6px var(--lime-line))" }}
+                    />
+                  </svg>
+                  <div className="ring-center">
+                    <b>{sectionPercent}%</b>
+                  </div>
+                </div>
+                <p className="profile-ring-caption">
+                  {completedSections} / {totalSections} section bajarildi
+                </p>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 className="panel-title">Challenge progressi</h3>
+              <div className="profile-ring-wrap">
+                <div style={{ position: "relative", width: 120, height: 120 }}>
+                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
+                    <circle cx="60" cy="60" r={CHALLENGE_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="8" />
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r={CHALLENGE_RING_RADIUS}
+                      fill="none"
+                      stroke="var(--cyan)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={CHALLENGE_RING_CIRCUMFERENCE}
+                      strokeDashoffset={challengeOffset}
+                      style={{ filter: "drop-shadow(0 0 6px rgba(34,211,238,.35))" }}
+                    />
+                  </svg>
+                  <div className="ring-center">
+                    <b style={{ color: "var(--cyan)" }}>{challengePercent}%</b>
+                  </div>
+                </div>
+                <p className="profile-ring-caption">
+                  {solvedCount} / {totalChallenges} challenge yechildi
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {editing && <EditProfileModal onClose={() => setEditing(false)} />}
     </section>
   );
 }
