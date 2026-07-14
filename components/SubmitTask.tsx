@@ -14,8 +14,8 @@ interface SubmitTaskProps {
   groundTruth: string;
   /** Whether this challenge was already solved before this page load. */
   alreadySolved: boolean;
-  /** Called on a correct submission. Returns true if points were newly awarded. */
-  onCorrect: () => boolean;
+  /** Called on a locally-correct submission; server grades + awards points. */
+  onCorrect: (selectedIds: string[]) => Promise<{ pointsAwarded: number; alreadySolved: boolean }>;
 }
 
 type Phase = "idle" | "wrong";
@@ -33,6 +33,7 @@ export default function SubmitTask({
   const [solved, setSolved] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [awardedThisAttempt, setAwardedThisAttempt] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const submitBtnRef = useRef<HTMLButtonElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
 
@@ -64,16 +65,22 @@ export default function SubmitTask({
     );
   };
 
-  const handleSubmit = () => {
-    if (solved) return;
+  const handleSubmit = async () => {
+    if (solved || submitting) return;
     if (selectedIds.length === 0) {
       shake();
       return;
     }
     const isCorrect = gradeSubmission(options, selectedIds);
     if (isCorrect) {
-      setSolved(true);
-      setAwardedThisAttempt(onCorrect());
+      setSubmitting(true);
+      try {
+        const result = await onCorrect(selectedIds);
+        setSolved(true);
+        setAwardedThisAttempt(result.pointsAwarded > 0);
+      } finally {
+        setSubmitting(false);
+      }
     } else {
       setPhase("wrong");
       shake();
@@ -133,8 +140,13 @@ export default function SubmitTask({
           className="btn btn-primary btn-block"
           style={{ marginTop: 22 }}
           onClick={handleSubmit}
+          disabled={submitting}
         >
-          {phase === "wrong" ? "Unchamas — AI Mentor maslahatlarini ko'ring" : "Yuborish"}
+          {submitting
+            ? "Yuborilmoqda…"
+            : phase === "wrong"
+              ? "Unchamas — AI Mentor maslahatlarini ko'ring"
+              : "Yuborish"}
         </button>
       )}
 

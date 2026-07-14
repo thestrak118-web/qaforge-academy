@@ -3,6 +3,7 @@
 import { IconProfile, IconTrophy } from "@/lib/icons";
 import { useScore } from "@/lib/score-context";
 import { useLessonProgress } from "@/lib/lesson-progress-context";
+import { useAuth } from "@/lib/auth-context";
 import { ALL_SECTIONS } from "@/data/lessons";
 import { getOverallProgress } from "@/lib/lessons";
 import { getRankProgress } from "@/lib/scoring";
@@ -13,6 +14,7 @@ const SECTION_RING_CIRCUMFERENCE = 2 * Math.PI * SECTION_RING_RADIUS;
 export default function ProfilePage() {
   const { points, solvedIds } = useScore();
   const { isCompleted } = useLessonProgress();
+  const { user, profile } = useAuth();
 
   const rankProgress = getRankProgress(points);
 
@@ -31,8 +33,8 @@ export default function ProfilePage() {
           <div className="avatar">
             <IconProfile />
           </div>
-          <h2>Mehmon</h2>
-          <div className="email">Hisobga kirilmagan</div>
+          <h2>{profile?.display_name ?? "…"}</h2>
+          <div className="email">{user?.email ?? ""}</div>
           <div className="role-badge">
             <IconTrophy /> {rankProgress.rank}
           </div>

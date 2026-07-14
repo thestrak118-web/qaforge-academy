@@ -18,7 +18,7 @@ export default function ChallengeDetailPage({
 }) {
   const { id } = use(params);
   const challenge = CHALLENGES.find((c) => c.id === id);
-  const { isSolved, recordSolve } = useScore();
+  const { isSolved, submitChallenge } = useScore();
 
   if (!challenge) {
     return (
@@ -85,7 +85,7 @@ export default function ChallengeDetailPage({
               points={challenge.points}
               groundTruth={challenge.groundTruth}
               alreadySolved={isSolved(challenge.id)}
-              onCorrect={() => recordSolve(challenge.id, challenge.points)}
+              onCorrect={(selectedIds) => submitChallenge(challenge.id, selectedIds)}
             />
           </div>
         </div>

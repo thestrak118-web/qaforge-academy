@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/lib/auth-context";
 import { ScoreProvider } from "@/lib/score-context";
 import { LessonProgressProvider } from "@/lib/lesson-progress-context";
-import Sidebar from "@/components/Sidebar";
-import TopBar from "@/components/TopBar";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,17 +34,13 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
     >
       <body>
-        <ScoreProvider>
-          <LessonProgressProvider>
-            <div className="app">
-              <Sidebar />
-              <div className="main">
-                <TopBar />
-                <div className="content">{children}</div>
-              </div>
-            </div>
-          </LessonProgressProvider>
-        </ScoreProvider>
+        <AuthProvider>
+          <ScoreProvider>
+            <LessonProgressProvider>
+              <AppShell>{children}</AppShell>
+            </LessonProgressProvider>
+          </ScoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );

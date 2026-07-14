@@ -1,12 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useScore } from "@/lib/score-context";
+import { useAuth } from "@/lib/auth-context";
 import RankBadge from "@/components/RankBadge";
-import { IconSearch, IconBell, IconProfile } from "@/lib/icons";
+import { IconSearch, IconBell, IconProfile, IconLogout } from "@/lib/icons";
 
 export default function TopBar() {
   const { points, rank } = useScore();
+  const { profile, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <header className="topbar">
@@ -16,6 +26,11 @@ export default function TopBar() {
         <kbd>⌘K</kbd>
       </label>
       <div className="top-right">
+        {profile && (
+          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--dim-text)" }}>
+            {profile.display_name}
+          </span>
+        )}
         <RankBadge rank={rank} points={points} />
         <button type="button" className="icon-btn" aria-label="Bildirishnomalar">
           <span className="ping" />
@@ -23,8 +38,12 @@ export default function TopBar() {
         </button>
         <Link href="/profile" className="btn btn-ghost btn-sm">
           <IconProfile />
-          Profilga kirish
+          Profil
         </Link>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={handleLogout}>
+          <IconLogout />
+          Chiqish
+        </button>
       </div>
     </header>
   );

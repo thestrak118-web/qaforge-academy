@@ -110,32 +110,6 @@ export default function Sidebar() {
       })}
 
       <div className="sidebar-foot">
-        <div className="streak-card">
-          <div className="streak-top">
-            <span>Daily Streak</span>
-            <div className="streak-fire">
-              🔥 <b>7</b> days
-            </div>
-          </div>
-          <div className="streak-dots">
-            <i className="dot on" />
-            <i className="dot on" />
-            <i className="dot on" />
-            <i className="dot on" />
-            <i className="dot on" />
-            <i className="dot on" />
-            <i className="dot on" />
-          </div>
-        </div>
-        <div className="xp-mini">
-          <div className="xp-mini-top">
-            <span>XP to Level 3</span>
-            <b className="mono">240 / 500</b>
-          </div>
-          <div className="bar">
-            <i style={{ width: "48%" }} />
-          </div>
-        </div>
         <div className="theme-row">
           <div className="switch" />
           <span>Dark theme</span>

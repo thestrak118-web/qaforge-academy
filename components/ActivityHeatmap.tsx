@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
+// Real activity heatmap: `activity` maps "YYYY-MM-DD" -> event count, built
+// from the user's actual challenge_submissions + lesson_progress timestamps
+// (see app/stats/page.tsx). Rendered client-only via next/dynamic(ssr:false)
+// so "today" is always the viewer's local date.
+
 import { IconGrid } from "@/lib/icons";
 
 const HEAT_MONTHS = ["Avg", "Sen", "Okt", "Noy", "Dek", "Yan", "Fev", "Mar", "Apr", "May", "Iyun", "Iyul"];
+const WEEKS = 52;
+const DAYS = 7;
 
-function generateGrid(): number[][] {
-  const weeks = 52;
-  const days = 7;
-  return Array.from({ length: weeks }, () => Array.from({ length: days }, () => Math.random()));
+function dateKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function levelFor(count: number) {
+  if (count <= 0) return 0;
+  if (count === 1) return 0.4;
+  if (count === 2) return 0.6;
+  if (count === 3) return 0.8;
+  return 1;
 }
 
 function bgFor(lvl: number) {
@@ -19,12 +31,31 @@ function bgFor(lvl: number) {
   return "rgba(255,255,255,.05)";
 }
 
-// Rendered client-only via next/dynamic(ssr:false) in app/stats/page.tsx, so
-// this lazy useState initializer never runs during SSR — no hydration
-// mismatch from the random heat levels (ported from the reference's
-// renderHeat(), which is likewise pure client-side).
-export default function ActivityHeatmap() {
-  const [grid] = useState(generateGrid);
+function buildGrid(activity: Map<string, number>): number[][] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const grid: number[][] = [];
+  for (let w = 0; w < WEEKS; w++) {
+    const col: number[] = [];
+    for (let d = 0; d < DAYS; d++) {
+      const offsetDays = (WEEKS - 1 - w) * 7 + (DAYS - 1 - d);
+      const date = new Date(today);
+      date.setDate(date.getDate() - offsetDays);
+      col.push(levelFor(activity.get(dateKey(date)) ?? 0));
+    }
+    grid.push(col);
+  }
+  return grid;
+}
+
+interface ActivityHeatmapProps {
+  activity: Map<string, number>;
+}
+
+export default function ActivityHeatmap({ activity }: ActivityHeatmapProps) {
+  const grid = buildGrid(activity);
+  const hasActivity = activity.size > 0;
 
   return (
     <div className="heat-card">
@@ -33,7 +64,9 @@ export default function ActivityHeatmap() {
         Faollik
       </h3>
       <div className="sub" style={{ fontSize: 12, color: "var(--dim)", marginTop: 2 }}>
-        Namunaviy issiqlik xaritasi — Phase 2&apos;da haqiqiy faoliyatga ulanadi.
+        {hasActivity
+          ? "Oxirgi 12 oydagi haqiqiy faoliyatingiz."
+          : "Hali faoliyat yo'q — challenge yeching yoki dars yakunlang."}
       </div>
       <div className="heat-months">
         {HEAT_MONTHS.map((m) => (
