@@ -9,7 +9,7 @@ import { IconSearch, IconBell, IconProfile, IconLogout } from "@/lib/icons";
 
 export default function TopBar() {
   const { points, rank } = useScore();
-  const { profile, signOut } = useAuth();
+  const { displayName, loading, signOut } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -26,10 +26,14 @@ export default function TopBar() {
         <kbd>⌘K</kbd>
       </label>
       <div className="top-right">
-        {profile && (
-          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--dim-text)" }}>
-            {profile.display_name}
-          </span>
+        {loading ? (
+          <span className="skeleton" style={{ width: 90, height: 14 }} />
+        ) : (
+          displayName && (
+            <span style={{ fontSize: 13, fontWeight: 600, color: "var(--dim-text)" }}>
+              {displayName}
+            </span>
+          )
         )}
         <RankBadge rank={rank} points={points} />
         <button type="button" className="icon-btn" aria-label="Bildirishnomalar">

@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import {
   getSection,
@@ -10,12 +10,13 @@ import {
   LEVEL_LABEL,
 } from "@/data/lessons";
 import { useLessonProgress } from "@/lib/lesson-progress-context";
-import SectionSidebar from "@/components/SectionSidebar";
+import { getModuleCompletion } from "@/lib/lessons";
 import BlockRenderer from "@/components/BlockRenderer";
 import PracticalTask from "@/components/PracticalTask";
 import SectionQuiz from "@/components/SectionQuiz";
 import SectionNav from "@/components/SectionNav";
-import { IconClock } from "@/lib/icons";
+import TableOfContents from "@/components/TableOfContents";
+import { BrandIcon, IconArrowLeft, IconClock, IconMenu } from "@/lib/icons";
 
 export default function SectionPage({
   params,
@@ -25,6 +26,7 @@ export default function SectionPage({
   const { sectionId } = use(params);
   const section = getSection(sectionId);
   const { isCompleted, toggleCompleted } = useLessonProgress();
+  const [tocOpen, setTocOpen] = useState(false);
 
   if (!section) {
     return (
@@ -45,65 +47,93 @@ export default function SectionPage({
   const indexInModule = parentModule.sections.findIndex((s) => s.id === sectionId);
   const { prev, next } = getAdjacentSections(sectionId);
   const done = isCompleted(section.id);
+  const { percent: modulePercent } = getModuleCompletion(parentModule, isCompleted);
 
   const markComplete = () => {
     if (!isCompleted(section.id)) toggleCompleted(section.id);
   };
 
   return (
-    <section>
-      <div className="section-layout">
-        <SectionSidebar currentSectionId={sectionId} />
-
-        <div style={{ minWidth: 0 }}>
-          <div className="lesson-breadcrumb">
-            <span>{parentModule.title}</span>
-            <span>›</span>
-            <b>
-              Section {indexInModule + 1} / {parentModule.sections.length}
-            </b>
+    <div className="focus-page">
+      <header className="focus-header">
+        <Link href="/dashboard" className="focus-logo">
+          <div className="brand-mark">
+            <BrandIcon />
           </div>
-
-          <div className="lesson-header">
-            <h1>{section.title}</h1>
-            <div className="lesson-meta">
-              <span className={`sec-type-badge sec-type-${section.type}`}>
-                {SECTION_TYPE_LABEL[section.type]}
-              </span>
-              <span>
-                <IconClock /> {section.minutes} daqiqa
-              </span>
-              <span>{LEVEL_LABEL[parentModule.level]}</span>
-            </div>
+          <div className="brand-txt">
+            <strong>QAForge</strong>
+            <span>Academy</span>
           </div>
+        </Link>
 
-          <div className="lesson-body">
-            <BlockRenderer body={section.body} />
+        <div className="focus-divider" />
+
+        <div className="focus-header-left">
+          <Link href="/learn" className="focus-back" aria-label="Darslarga qaytish">
+            <IconArrowLeft />
+          </Link>
+          <span className="focus-module-icon" aria-hidden>
+            {parentModule.icon}
+          </span>
+          <span className="focus-module-name">{parentModule.title}</span>
+          <div className="focus-progress-track">
+            <i style={{ width: `${modulePercent}%` }} />
           </div>
-
-          {section.type === "practical" && section.practical && (
-            <div style={{ marginTop: 22 }}>
-              <PracticalTask data={section.practical} alreadyCompleted={done} onComplete={markComplete} />
-            </div>
-          )}
-
-          {section.type === "quiz" && section.quiz && (
-            <div style={{ marginTop: 22 }}>
-              <SectionQuiz questions={section.quiz} alreadyCompleted={done} onAllCorrect={markComplete} />
-            </div>
-          )}
-
-          <SectionNav
-            section={section}
-            prev={prev}
-            next={next}
-            indexInModule={indexInModule}
-            totalInModule={parentModule.sections.length}
-            isDone={done}
-            onComplete={markComplete}
-          />
+          <span className="focus-progress-pct">{modulePercent}%</span>
         </div>
+
+        <button type="button" className="focus-toc-btn" onClick={() => setTocOpen(true)}>
+          <IconMenu />
+          Barcha darslar
+        </button>
+      </header>
+
+      <div className="focus-content">
+        <div className="lesson-breadcrumb mono">
+          Section {indexInModule + 1} / {parentModule.sections.length}
+        </div>
+
+        <div className="lesson-header">
+          <h1>{section.title}</h1>
+          <div className="lesson-meta">
+            <span className={`sec-type-badge sec-type-${section.type}`}>
+              {SECTION_TYPE_LABEL[section.type]}
+            </span>
+            <span>
+              <IconClock /> {section.minutes} daqiqa
+            </span>
+            <span>{LEVEL_LABEL[parentModule.level]}</span>
+          </div>
+        </div>
+
+        <div className="lesson-body">
+          <BlockRenderer body={section.body} />
+        </div>
+
+        {section.type === "practical" && section.practical && (
+          <div style={{ marginTop: 22 }}>
+            <PracticalTask data={section.practical} alreadyCompleted={done} onComplete={markComplete} />
+          </div>
+        )}
+
+        {section.type === "quiz" && section.quiz && (
+          <div style={{ marginTop: 22 }}>
+            <SectionQuiz questions={section.quiz} alreadyCompleted={done} onAllCorrect={markComplete} />
+          </div>
+        )}
+
+        <SectionNav
+          section={section}
+          prev={prev}
+          next={next}
+          indexInModule={indexInModule}
+          totalInModule={parentModule.sections.length}
+          isDone={done}
+          onComplete={markComplete}
+        />
       </div>
-    </section>
+
+      {tocOpen && <TableOfContents currentSectionId={sectionId} onClose={() => setTocOpen(false)} />}
+    </div>
   );
 }

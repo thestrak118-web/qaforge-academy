@@ -39,25 +39,32 @@ export default function RegisterPage() {
 
     setLoading(true);
     const supabase = createClient();
+    const trimmedName = name.trim();
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
-        data: { display_name: name.trim() },
+        data: { display_name: trimmedName },
       },
     });
-    setLoading(false);
 
     if (signUpError) {
+      setLoading(false);
       setError(mapAuthError(signUpError.message, "register"));
       return;
     }
 
-    if (data.session) {
+    if (data.session && data.user) {
+      // Belt-and-braces: write display_name directly rather than relying
+      // solely on handle_new_user() reading raw_user_meta_data correctly.
+      await supabase.from("profiles").update({ display_name: trimmedName }).eq("id", data.user.id);
+      setLoading(false);
       router.push("/dashboard");
       router.refresh();
       return;
     }
+
+    setLoading(false);
 
     setNotice(
       "Ro'yxatdan o'tish muvaffaqiyatli! Hisobingizni faollashtirish uchun emailingizni tekshiring."

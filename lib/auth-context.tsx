@@ -4,7 +4,7 @@
 // ScoreProvider reads `profile.points` and bumps it locally after a server
 // grades+awards a submission, instead of refetching the whole profile.
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -19,6 +19,12 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  /**
+   * Resolved display name: profiles.display_name if set, else the part of
+   * the email before "@", else "". Never the raw possibly-empty column —
+   * use this instead of `profile?.display_name` everywhere it's shown.
+   */
+  displayName: string;
   signOut: () => Promise<void>;
   bumpPoints: (amount: number) => void;
   /** Updates profiles.display_name and reflects it locally on success. */
@@ -91,9 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user]
   );
 
+  const displayName = useMemo(() => {
+    const fromProfile = profile?.display_name?.trim();
+    if (fromProfile) return fromProfile;
+    const emailLocalPart = user?.email?.split("@")[0]?.trim();
+    return emailLocalPart ?? "";
+  }, [profile, user]);
+
   return (
     <AuthContext.Provider
-      value={{ user, profile, loading, signOut, bumpPoints, updateDisplayName }}
+      value={{ user, profile, loading, displayName, signOut, bumpPoints, updateDisplayName }}
     >
       {children}
     </AuthContext.Provider>

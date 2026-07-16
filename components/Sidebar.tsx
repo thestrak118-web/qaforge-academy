@@ -83,7 +83,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="brand">
+      <Link href="/dashboard" className="brand">
         <div className="brand-mark">
           <BrandIcon />
         </div>
@@ -91,7 +91,7 @@ export default function Sidebar() {
           <strong>QAForge</strong>
           <span>Academy</span>
         </div>
-      </div>
+      </Link>
 
       <div className="nav-label">Menu</div>
       {NAV_LINKS.map((item) => {

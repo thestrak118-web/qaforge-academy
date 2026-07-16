@@ -12,10 +12,10 @@ interface EditProfileModalProps {
 }
 
 export default function EditProfileModal({ onClose }: EditProfileModalProps) {
-  const { profile, updateDisplayName, signOut } = useAuth();
+  const { displayName, updateDisplayName, signOut } = useAuth();
   const router = useRouter();
 
-  const [name, setName] = useState(profile?.display_name ?? "");
+  const [name, setName] = useState(displayName);
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
   const [nameSaved, setNameSaved] = useState(false);

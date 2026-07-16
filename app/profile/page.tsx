@@ -50,7 +50,7 @@ interface ActivityItem {
 export default function ProfilePage() {
   const { points, solvedIds, submissions } = useScore();
   const { completedIds, completions } = useLessonProgress();
-  const { user, profile } = useAuth();
+  const { user, displayName, loading } = useAuth();
   const [editing, setEditing] = useState(false);
 
   const rankProgress = getRankProgress(points);
@@ -88,8 +88,6 @@ export default function ProfilePage() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 6);
 
-  const displayName = profile?.display_name ?? "…";
-
   return (
     <section>
       <div className="profile-stack">
@@ -104,10 +102,14 @@ export default function ProfilePage() {
                   strokeWidth="2"
                 />
               </svg>
-              <span>{initials(displayName)}</span>
+              {!loading && <span>{initials(displayName)}</span>}
             </div>
             <div>
-              <h1 className="profile-name">{displayName}</h1>
+              {loading ? (
+                <span className="skeleton" style={{ width: 160, height: 24, display: "block" }} />
+              ) : (
+                <h1 className="profile-name">{displayName}</h1>
+              )}
               <p className="profile-email">{user?.email ?? ""}</p>
             </div>
           </div>
