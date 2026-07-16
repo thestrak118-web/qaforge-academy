@@ -11,9 +11,9 @@ import { getRankProgress } from "@/lib/scoring";
 import EditProfileModal from "@/components/EditProfileModal";
 import { IconShield, IconGrid, IconArrowRight, IconBolt, IconCheck } from "@/lib/icons";
 
-const SECTION_RING_RADIUS = 50;
+const SECTION_RING_RADIUS = 42;
 const SECTION_RING_CIRCUMFERENCE = 2 * Math.PI * SECTION_RING_RADIUS;
-const CHALLENGE_RING_RADIUS = 50;
+const CHALLENGE_RING_RADIUS = 42;
 const CHALLENGE_RING_CIRCUMFERENCE = 2 * Math.PI * CHALLENGE_RING_RADIUS;
 
 function initials(name: string) {
@@ -216,16 +216,16 @@ export default function ProfilePage() {
             <div className="card">
               <h3 className="panel-title">O&apos;quv progressi</h3>
               <div className="profile-ring-wrap">
-                <div style={{ position: "relative", width: 120, height: 120 }}>
-                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
-                    <circle cx="60" cy="60" r={SECTION_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="8" />
+                <div style={{ position: "relative", width: 104, height: 104 }}>
+                  <svg width="104" height="104" viewBox="0 0 104 104" style={{ transform: "rotate(-90deg)" }}>
+                    <circle cx="52" cy="52" r={SECTION_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="7" />
                     <circle
-                      cx="60"
-                      cy="60"
+                      cx="52"
+                      cy="52"
                       r={SECTION_RING_RADIUS}
                       fill="none"
                       stroke="var(--lime)"
-                      strokeWidth="8"
+                      strokeWidth="7"
                       strokeLinecap="round"
                       strokeDasharray={SECTION_RING_CIRCUMFERENCE}
                       strokeDashoffset={sectionOffset}
@@ -233,28 +233,28 @@ export default function ProfilePage() {
                     />
                   </svg>
                   <div className="ring-center">
-                    <b>{sectionPercent}%</b>
+                    <b style={{ fontSize: 22 }}>{sectionPercent}%</b>
+                    <p className="profile-ring-caption">
+                      {completedSections} / {totalSections} section bajarildi
+                    </p>
                   </div>
                 </div>
-                <p className="profile-ring-caption">
-                  {completedSections} / {totalSections} section bajarildi
-                </p>
               </div>
             </div>
 
             <div className="card">
               <h3 className="panel-title">Challenge progressi</h3>
               <div className="profile-ring-wrap">
-                <div style={{ position: "relative", width: 120, height: 120 }}>
-                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
-                    <circle cx="60" cy="60" r={CHALLENGE_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="8" />
+                <div style={{ position: "relative", width: 104, height: 104 }}>
+                  <svg width="104" height="104" viewBox="0 0 104 104" style={{ transform: "rotate(-90deg)" }}>
+                    <circle cx="52" cy="52" r={CHALLENGE_RING_RADIUS} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="7" />
                     <circle
-                      cx="60"
-                      cy="60"
+                      cx="52"
+                      cy="52"
                       r={CHALLENGE_RING_RADIUS}
                       fill="none"
                       stroke="var(--cyan)"
-                      strokeWidth="8"
+                      strokeWidth="7"
                       strokeLinecap="round"
                       strokeDasharray={CHALLENGE_RING_CIRCUMFERENCE}
                       strokeDashoffset={challengeOffset}
@@ -262,12 +262,12 @@ export default function ProfilePage() {
                     />
                   </svg>
                   <div className="ring-center">
-                    <b style={{ color: "var(--cyan)" }}>{challengePercent}%</b>
+                    <b style={{ fontSize: 22, color: "var(--cyan)" }}>{challengePercent}%</b>
+                    <p className="profile-ring-caption">
+                      {solvedCount} / {totalChallenges} challenge yechildi
+                    </p>
                   </div>
                 </div>
-                <p className="profile-ring-caption">
-                  {solvedCount} / {totalChallenges} challenge yechildi
-                </p>
               </div>
             </div>
           </div>

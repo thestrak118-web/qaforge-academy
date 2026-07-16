@@ -1971,10 +1971,24 @@ a {
   gap: 12px;
   padding: 6px 0 4px;
 }
+
+.ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2px;
+}
+
 .profile-ring-caption {
-  font-size: 12.5px;
+  font-size: 10px;
+  line-height: 1.25;
   color: var(--dim-text);
   text-align: center;
+  max-width: 70px;
 }
 
 .edit-profile-modal {
