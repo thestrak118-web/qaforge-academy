@@ -108,7 +108,7 @@ export default function SubmitTask({
           if (solved) {
             stateClass = option.correct ? " correct" : "";
           } else if (phase === "wrong") {
-            stateClass = option.correct ? " correct" : isSelected ? " wrong" : "";
+            stateClass = isSelected ? " wrong" : "";
           } else {
             stateClass = isSelected ? " sel" : "";
           }
